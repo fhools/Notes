@@ -1,0 +1,7 @@
+Ports vs Homebrew
+Ports is a Mac OS X port of debian ports tool from BSD to manage packages.
+Homebrew is a native Mac OS X tool that also manages packages.
+
+Ports default install is /opt
+
+Homebrew default install is /usr/loca
