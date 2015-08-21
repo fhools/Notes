@@ -1,0 +1,10 @@
+How .local hostname works
+.local hostname lookup tells mac os x to use bonjour to look it up
+Bonjour multicast DNS is how a hostname replies that it is the ip address for hostname.local
+
+You can add .local to DNS search domain so you don't need to specify .local in the hostname
+
+
+How to change computer hostname
+--------------------------------
+System Preferences -> Sharing -> Specify Computer Name
