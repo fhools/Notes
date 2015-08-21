@@ -5,3 +5,20 @@ Homebrew is a native Mac OS X tool that also manages packages.
 Ports default install is /opt
 
 Homebrew default install is /usr/loca
+
+
+XCode Default Selection
+sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
+
+Installing Homebrew
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+Listing what is installed
+brew list
+brew cask list
+
+Seeing what packages are out of date
+brew outdated
+
+Upgrading packages
+brew upgrade [package]
