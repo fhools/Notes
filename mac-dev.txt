@@ -4,7 +4,27 @@ Homebrew is a native Mac OS X tool that also manages packages.
 
 Ports default install is /opt
 
-Homebrew default install is /usr/loca
+Homebrew default install is /usr/local
+
+Homebrew and El Capitain
+------------------------
+MAC OS X El Capitain has implemented SIP. This means /usr/local now
+requires special permissions to write to.
+
+To fix it do the following:
+sudo chown $(whoami):admin /usr/local && sudo chown -R $(whoami):admin /usr/local
+
+If /usr/local does not exist:
+
+Reboot into Recovery mode (Hold Cmd+R on boot) & access the Terminal.
+In that terminal run: csrutil disable
+Reboot back into OS X
+Open your Terminal application and execute:
+  sudo mkdir /usr/local && sudo chflags norestricted /usr/local && sudo chown $(whoami):admin /usr/local && sudo chown -R $(whoami):admin /usr/local
+Reboot back into Recovery Mode & access the Terminal again.
+In that terminal execute: csrutil enable
+Reboot back into OS X & you'll be able to write to /usr/local & install Homebrew.
+
 
 
 XCode Default Selection

@@ -8,3 +8,11 @@ You can add .local to DNS search domain so you don't need to specify .local in t
 How to change computer hostname
 --------------------------------
 System Preferences -> Sharing -> Specify Computer Name
+
+
+Numbers Application
+-------------------
+
+Insert new row Option-<Down Arrow Key>
+
+

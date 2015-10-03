@@ -1,0 +1,2 @@
+# List URL for remote repository
+git remote show origin
