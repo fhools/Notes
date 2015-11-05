@@ -1,0 +1,20 @@
+We will refer to UIViews as Views
+
+Views are hiearchial.
+
+A View can contain subviews.
+
+Each subview has a 3 properties:
+
+frame: The origin and dimensions of a view relative to its superview's
+coordinate space.
+
+bounds: The origin and dimension of a view's visible space in its own coordinate space. When the bounds size is changed, so will its frame, but the center will remain the same.
+
+The bound's origin corresponds the portion of the view that is currently visible. This portion is what will be visible at it's frame.
+
+
+center: The center point of view in the superview's coordinate space. This value will remain unchanged when bounds changes sizes.
+
+
+
