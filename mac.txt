@@ -23,3 +23,7 @@ sudo launchctl config user umask 077
 Show all files in Finder
 -------------------------
 defaults write com.apple.finder AppleShowAllFiles YES.
+
+Mount samba founder from command line
+-------------------------------------
+mount_smbfs //GUEST:@wdmycloud.local/Francis /Volumes/Francis
