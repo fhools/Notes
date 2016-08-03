@@ -16,3 +16,10 @@ Numbers Application
 Insert new row Option-<Down Arrow Key>
 
 
+Setting UMASK
+-------------
+sudo launchctl config user umask 077
+
+Show all files in Finder
+-------------------------
+defaults write com.apple.finder AppleShowAllFiles YES.
