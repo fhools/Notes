@@ -27,3 +27,8 @@ defaults write com.apple.finder AppleShowAllFiles YES.
 Mount samba founder from command line
 -------------------------------------
 mount_smbfs //GUEST:@wdmycloud.local/Francis /Volumes/Francis
+
+Enable DTrace use in SIP system:
+================================
+
+csrutil enable --without dtrace
