@@ -1,0 +1,12 @@
+Install Mac OS X Ethereum go-based client geth
+==============================================
+brew update
+brew upgrade
+brew ap ethereum/ethereum
+brew install ethereum
+
+Create new account
+==================
+geth account new
+
+

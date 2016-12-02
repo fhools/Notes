@@ -1,0 +1,12 @@
+
+
+./mach build --release
+
+Compiling servo on Mac 10.11 failed to build
+Need to manually set openssl include directory:
+export OPENSSL_INCLUDE_DIR=/usr/local/Cellar/openssl/1.0.2d_1/include/
+export OPENSSL_ROOT_DIR=/usr/local/Cellar/openssl/1.0.2d_1/
+
+These env variables must be set before build process to be utilized.
+Rm .server and .cargo directory if alreadt started build and retry
+
