@@ -30,5 +30,9 @@ mount_smbfs //GUEST:@wdmycloud.local/Francis /Volumes/Francis
 
 Enable DTrace use in SIP system:
 ================================
+Boot into Recovery Mode Hold CMD-R down during boot up
+Open up terminal under Utilities.
 
 csrutil enable --without dtrace
+
+Reboot
