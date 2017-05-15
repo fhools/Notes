@@ -36,3 +36,28 @@ Open up terminal under Utilities.
 csrutil enable --without dtrace
 
 Reboot
+
+
+Hide application from docker
+============================
+Under .app/Contents/Info.plist add the following before the end of </dict>
+
+<key>LSUIElement</key>
+<true/>
+
+How to add ITunesHelper (Auto starts itunes when Iphone plugged in)
+=====================================================================
+Go to Finder /Applications/ITunes.app/Content/MacOS/
+Grab ITunesHelper.App to Login Items under System Pref -> Users And Groups -> Login Items
+
+
+Add File/Folder to MacOS Favorites Sidebar
+==========================================
+In Finder Command-K to Connecto Server.
+Click + to Add server to favorites
+In Finder open up Favorite Connecton Command-Shift-K
+Drag mount drive to Favorites between any two items
+
+
+Mount network file share from command line
+sudo mount_smbfs -N smb://GUEST:@wdmycloud.local/MyShare /Volumes/MyShare
