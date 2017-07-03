@@ -1,0 +1,4 @@
+### Encrypt a file with passcode
+```bash
+gpg --output <encrypted_file_name.gpg> --symmetric file_to_encrypt.txt
+```
