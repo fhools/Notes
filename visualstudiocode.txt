@@ -1,0 +1,6 @@
+# Visual Studio Project Settings.
+Under base directory is .vscode directory
+
+# Include Path
+Under .vscode/c_cpp_properties.json
+

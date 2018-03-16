@@ -52,3 +52,7 @@ Launching Emacs from commandline
 Compiling C++11 from command line
 =================================
 clang++ -std=c++11 -stdlib=libc++ source.cpp -o source.x
+
+# ldd command equivalent
+otool -L
+

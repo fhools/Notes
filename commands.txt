@@ -1,4 +1,12 @@
-### Encrypt a file with passcode
+# Encrypt a file with passcode
 ```bash
 gpg --output <encrypted_file_name.gpg> --symmetric file_to_encrypt.txt
+```
+
+# Define function at commandline
+This shows how to make an "alias" that invokes command in the background:
+
+```
+$ e() { command emacsclient $* & disown ;} ;
+
 ```

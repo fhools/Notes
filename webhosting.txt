@@ -1,0 +1,7 @@
+### How to setup web server on port 80 with non-root user
+1. Add non-user to sudo group
+   a. adduser user sudo. (user must logout/login to take affect)
+2. Raise capability of program via setcap
+   b. sudo setcap CAP_NET_BIND_SERVICE=+eip <path_to_program>
+
+   

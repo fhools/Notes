@@ -3,3 +3,8 @@ To add .el plugins to emacs place them in ~/.emacs.d/
 Add to your ~/.emacs file:
 (add-to-list 'load-path "~/.emacs.d/")
 (require 'yourmodule')
+
+MELPA Emacs Package
+
+# Show list of packages available to instal
+M-x package-list-packages

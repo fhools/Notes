@@ -45,6 +45,9 @@ Under .app/Contents/Info.plist add the following before the end of </dict>
 <key>LSUIElement</key>
 <true/>
 
+# Enter path in Open File Dialog
+Command-Shift-G
+
 How to add ITunesHelper (Auto starts itunes when Iphone plugged in)
 =====================================================================
 Go to Finder /Applications/ITunes.app/Content/MacOS/
