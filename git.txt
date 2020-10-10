@@ -1,2 +1,17 @@
 # List URL for remote repository
 git remote show origin
+
+
+# To push bare repository to github
+git init
+git add
+git commit
+git remote add origin remote <GITHUB URL>
+
+git push -f origin master
+
+
+# To use github credentials from system
+# NOTE: Need to install git from brew 
+git config --global credential.helper osxkeychain
+
