@@ -1,0 +1,14 @@
+#Install Anaconda, fastai, jupyterlab
+brew cask install conda
+conda install -c fastai -c pytorch -c anaconda fastai gh anaconda
+conda install -c jupyterlab
+
+# Create virtual environment
+conda create -n fastai python=3.6
+
+# When you want to use the
+conda activate fastai
+
+# List out available environments
+conda env list
+
