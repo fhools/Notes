@@ -1,0 +1,6 @@
+# Install youtube-dl and ffmpeg
+brew install youtube-dl
+brew install ffmpeg
+
+# Capture video and audio then combine into 1 file
+youtube-dl -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio' --merge-output-format mp4 <url> -o <out.mp4>
