@@ -65,3 +65,9 @@ Drag mount drive to Favorites between any two items
 Mount network file share from command line
 sudo mount_smbfs -N smb://GUEST:@ip/MyShare /Volumes/MyShare
 sudo mount_afp afp://ip/Blah /Volumes/Blah
+
+
+# Enable unsigned apps to run (a.k.a disable GateKeeper)
+man spctl
+spctl -a <app>
+spctl --add --label "MyApp" <app>
