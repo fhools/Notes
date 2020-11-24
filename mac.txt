@@ -71,3 +71,11 @@ sudo mount_afp afp://ip/Blah /Volumes/Blah
 man spctl
 spctl -a <app>
 spctl --add --label "MyApp" <app>
+
+# Show additional words during right click menus. 
+Hold option key while right clicking
+
+# Opening up terminal at specific folder in finder.
+In finder menu choose services -> New terminal at folder
+This also setup in System Preferences -> Keyboard -> Shortcuts -> Services
+

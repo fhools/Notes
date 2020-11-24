@@ -1,0 +1,6 @@
+V = start visual mode
+> to indent 
+< to unindent
+. to repeat indent
+u to undo
+gv reselect lines

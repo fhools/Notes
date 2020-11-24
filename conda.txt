@@ -1,0 +1,5 @@
+# Install Anaconda2 and Anaconda3 just install Anaconda3 then use conda to install python2 environment
+```shell
+conda create -n python2 python=2.7 anaconda
+source activate python2
+
