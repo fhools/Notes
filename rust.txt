@@ -1,0 +1,8 @@
+# Questions
+
+## Q: What does the following mean:
+func foo(x: impl std::hash::Hash) {}
+
+Specificallly the impl part. Hash is a trait, dyn std::hash::Hash would be a 
+trait object. 
+
