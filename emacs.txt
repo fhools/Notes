@@ -8,3 +8,12 @@ MELPA Emacs Package
 
 # Show list of packages available to instal
 M-x package-list-packages
+
+
+# Setup emacs diff
+M-x customize-group
+ediff
+
+Ediff Window Setup - Single Frame
+Ediff Split Window Function -  Split Horizontally
+
