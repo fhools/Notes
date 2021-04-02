@@ -1,0 +1,8 @@
+# Digital Ocean Console reset
+Hold shift, while held type in 'reset'
+
+# Ssh via password
+To enable ssh modify /etc/ssh/sshd_confif
+Set PasswordAuthentication to yes
+sudo systemctl restart ssh
+sudo systemctl restart sshd

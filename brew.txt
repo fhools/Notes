@@ -1,0 +1,7 @@
+# List files in a package
+brew list -v <pkg>
+
+
+# Resolving errors in package, e.g. could not link with .dylib
+brew upgrade <pkg>
+brew cleanup

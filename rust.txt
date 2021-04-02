@@ -1,3 +1,10 @@
+#Installing Rust
+brew install rustup
+
+# Switching between rust builds
+rustup default stable
+rustup default nightly
+
 # Questions
 
 ## Q: What does the following mean:

@@ -1,0 +1,42 @@
+# Guide to setting up local apache server for development
+[https://mallinson.ca/posts/5/the-perfect-web-development-environment-for-your-new-mac]
+
+
+# Setting up vhosts (from stackoverflow)
+No, as it is you can't do this because there is no way for Apache to determine
+the Project1 or AlphaProX part of the path name.
+
+These strings must either be in the URL, or, they must not be in the path. It
+would work if the paths were like /Users/stu/Sites/prox/prox_app/ because now
+the variable string prox is used. But otherwise Apache has no idea to look under
+AlphaProX/, your VirtualDocumentRoot "/Users/stu/Sites/* line won't work.
+(Apache is literally looking for a directory named */)
+
+You can make this work if you create a directory like 
+/Users/stu/Sites/vhost_aliases and create symbolic links under that directory
+to the actual projects, EG:
+
+mkdir -p /Users/stu/Sites/vhost_aliases
+cd /Users/stu/Sites/vhost_aliases
+ln -s ../site1_app
+ln -s ../AlphaProX/prox_app
+
+Then, you'll want your httpd.conf file to look like:
+
+<Virtualhost *:80>
+    VirtualDocumentRoot "/Users/stu/Sites/vhost_aliases/%1_app/"
+    ServerName vhosts.local
+    ServerAlias *.local
+    UseCanonicalName Off
+    LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
+    ErrorLog "/private/var/log/apache2/vhosts-error_log"
+    <Directory "/Users/stu/Sites/vhost_aliases">
+        Options Indexes FollowSymLinks MultiViews
+        AllowOverride All
+        Order allow,deny
+        Allow from all
+    </Directory>
+</Virtualhost>
+Specifically, this line:
+
+VirtualDocumentRoot "/Users/stu/Sites/vhost_aliases/%1_app/"
