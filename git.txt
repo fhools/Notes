@@ -15,3 +15,6 @@ git push -f origin master
 # NOTE: Need to install git from brew 
 git config --global credential.helper osxkeychain
 
+# On Windows
+git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-manager-core.exe"
+
