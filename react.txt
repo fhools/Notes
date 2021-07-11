@@ -1,0 +1,4 @@
+# To install and develop react via create-react-app.
+brew install node
+# Install create-react-app (v 2.1.2 is for Pro React 16 book
+npm install --global create-react-app@2.1.2

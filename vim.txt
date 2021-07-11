@@ -4,3 +4,20 @@ V = start visual mode
 . to repeat indent
 u to undo
 gv reselect lines
+
+J - join line with next line
+
+
+# Movement
+z - scroll cursor line to top of the screen
+
+
+#Windows
+Resize width
+    ctrl-w >/<
+Resie height
+    ctrl-w +/-
+
+Search from current location to end
+:,$s/old/new/
+

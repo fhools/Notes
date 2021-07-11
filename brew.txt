@@ -5,3 +5,12 @@ brew list -v <pkg>
 # Resolving errors in package, e.g. could not link with .dylib
 brew upgrade <pkg>
 brew cleanup
+
+
+# Upgrade from catalina to big sur
+brew doctor
+
+Then follow instructions from brew
+
+brew upgrade
+

@@ -1,0 +1,14 @@
+# nvim configuration file
+~/.config/nvim/init.vim
+
+# Plugins
+nvim has a built in plugin/package manager.
+
+```init.vim
+call plug#begin()
+Plug 'package/entry.vim'
+call plug#end()
+```
+
+
+Then start nvim and invoke :PlugInstall command

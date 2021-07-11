@@ -13,3 +13,15 @@ func foo(x: impl std::hash::Hash) {}
 Specificallly the impl part. Hash is a trait, dyn std::hash::Hash would be a 
 trait object. 
 
+
+# Using alternative/faster linker zld
+1. Install zld
+    brew install michaeleisel/zld/zld   
+2. Modify cargo file
+vim ~/.cargo/config
+
+```
+[target.x86_64-apple-darwin]
+rustflags = ["-C", "link-arg=-fuse-ld=/usr/local/bin/zld"]
+```
+
