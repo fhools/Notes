@@ -8,7 +8,15 @@ rustup default nightly
 # Questions
 
 ## Q: What does the following mean:
-func foo(x: impl std::hash::Hash) {}
+fn foo(x: impl std::hash::Hash) {}
+Answer: The above is equivalent to
+fn foo<T: std::hash::Hash>(x: T) {}
+
+Meaning foo is a generic function that takes an argument x, which must implement the Hash trait.
+Rust compiler will create a separate implementation for each call of foo with the specific parameter passed to foo.
+
+This is different than:
+fn foo(x: dyn std::hash::Hash)
 
 Specificallly the impl part. Hash is a trait, dyn std::hash::Hash would be a 
 trait object. 

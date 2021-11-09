@@ -1,0 +1,24 @@
+# Installing toolchain to work with GBA.
+$ brew install armmbed/formulae/arm-none-eabi-gcc
+
+# Linux
+sudo apt-get install binutils-arm-none-eabi
+
+# Mac
+brew install --cask gcc-arm-embedded
+
+# Rust
+rustup install nightly
+rustup +nightly component add rust-src
+
+cargo install cargo-make
+cargo install gbafix
+
+rustup default nightly
+
+git clone https://github.com/rust-console/gba gba-rust-example
+cargo build --release --example hello_world
+output is located in target/thumb
+arm-none-eabi-objcopy -O binary hello_world hello_world.gba
+gbafix hello_world.gba
+

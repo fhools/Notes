@@ -79,3 +79,5 @@ Hold option key while right clicking
 In finder menu choose services -> New terminal at folder
 This also setup in System Preferences -> Keyboard -> Shortcuts -> Services
 
+# Mount .dmg 
+hdiutil attach /path/to/file
