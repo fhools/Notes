@@ -81,3 +81,11 @@ This also setup in System Preferences -> Keyboard -> Shortcuts -> Services
 
 # Mount .dmg 
 hdiutil attach /path/to/file
+
+# Install virtual box
+Disable SIP 
+sudo spctl --master-disable
+Force quit System Preferences
+Install virtualbox
+enable SIP
+sudo spctl --master-enable
