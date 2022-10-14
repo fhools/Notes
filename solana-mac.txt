@@ -1,0 +1,38 @@
+git clone https://github.com/solana-labs/example-helloworld
+# Build solana for Rosetta
+# Start up Rosetta terminal
+git clone solana
+Install x86 rustup
+brew install coreutils
+cd solana
+cargo build
+./scripts/cargo-install-all.sh .
+export PATH="/Users/fhools/code/x86_64/solana"/bin:"$PATH"
+
+# Clone example-helloworld
+
+# CLone solana hello world
+git clone https://github.com/solana-labs/example-helloworld
+
+## Build 
+cd example-helloworld
+cargo build-bpf --manifest-path=./src/program-rust/Cargo.toml --bpf-out-dir=dist/program
+
+# Start up Solana test 
+## In new terminal, start up solana test validator
+## You must pass in --no-bpf-jit when running on m1 mac. If you don't cargo test-bpf will fail
+$ solana-test-validator --no-bpf-jit
+
+
+## In another window start solana log output
+$ solana logs
+
+# Create solana account
+$ solana config set --url localhost
+$ solana-keygen new
+
+## Deploy hello world program 
+$ cd example-helloworld
+$ solana program deploy dist/program/helloworld.so
+
+

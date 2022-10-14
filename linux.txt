@@ -1,3 +1,11 @@
-Install neovim via apt 
-Download neovim appimage from github release
-chmod u+x nvim.appimage && ./nvim.appimage
+Install neovim ubuntu from source
+sudo apt install cmake
+sudo apt install automake 
+sudo apt install libtool
+sudo apt install libtool-bin
+sudo apt install gettext
+
+Install Mina
+sudo apt install golang
+install ocaml 4.11.2 from github source
+sudo apt install opam

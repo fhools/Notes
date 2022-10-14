@@ -1,0 +1,2 @@
+Had to force cpython to link to shared library of libpython instead of static library. 
+Modified build.rs and force get_macos_linkmodel() to always return shared

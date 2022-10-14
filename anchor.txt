@@ -1,0 +1,117 @@
+# Accounts
+    A trait that implements a container of accounts.
+
+    Accounts takes a slice of solana_sdk::account_info::AccountInfo and converts it to to the implementing type of the trait.
+
+# General architecture of Anchor
+
+The syn package contains macros that parse user data types parser sub-package and stores it
+in an intermediate data structure, e.g. AccountsStruct.
+
+After parsing code into intermediate data structure, it then
+calls the codegen code, generate_xyz(). This code generates code
+utilizing constraints to generate data.
+
+
+Given a data structure from a #[program] decorated module
+The codegen program::generate() generates:
+    entry point
+        The main entry point to the smart contract. Essentially forwards to disatch
+    dispatch
+        The dispatcher looks at the discriminator (first 8 bytes of the instruction data)
+        It will then multiplex this and forwards to either IDL specific instructions,
+        or user define instructions
+    handlers:
+        Generated handlers for namespaced into 4 different sub-modules:
+            idl handlers
+            state constructor handlers
+                input: Program.state.ctor_and_anchor
+                Generates _ctor(program_id: &Pubkey, accounts: &[AccountInfo], idx_data: &[u8]) function
+            state method handlers 
+                input: Program.state.impl_block_and_methods (Vec<StateIx>)
+                output: Generates __state_method_handlers 
+            state trait interface handlers
+                input: Program.state.interfaces (Vec<StateInterface>) 
+                output: Generates__<trait>_<interfacemethod>() handlers
+            global handlers
+                input: Program.ixs (Vec<Ix>
+    user_defined_program
+        I think this is the actual module.
+    instruction
+
+# Outline of codegen program::handlers::generate generated code (the handlers part of Program struct.
+mod __private {
+    mod __idl {
+        ...idl functions
+    }
+    mod __state {
+        state constructor
+        state method handlers
+    }
+    mod __interface {
+        state interface handlers
+    }
+    mod __global {
+        ix handlers
+    }
+}
+
+
+State and its relation to Ctor.
+State parser processes module. 
+    Finds structs with #[state] attribute.
+    Within alll impl blocks, find the ones for #[state] struct. 
+        (Looks like there can only be 1 state struct per module)
+    Within the struct finds the method named "new"
+    Finds all the arguments for the new() method. 
+
+During codegen, the constructor is generated
+    Constructs a New struct using the argments to new() (exluding first argument which is Context<MyAccount>)
+    Constructor variant is 
+        New;
+        or
+        New { args } = ix
+   
+    Ctor is a private module in src/ctors.rs. It is #[derive(Accounts)]
+
+    It is used in anchor_lang::__private. 
+
+    Ctor is used to create accounts inside of the program instead of the client side.
+    Ctor {
+        from -- payer
+        to --  the state account being created
+        base -- the PDA signing on account creation
+        system_program -- system program
+        program -- the program whose state is being constructed
+    }
+
+
+    Ctor is used inside __ctor() generated code.
+    
+    Q: How are list of accountinfos inside Ctor passed to an instruction?
+    A: In namespace.ts, stateInstructionKeys() function, for method "new" generates an AccountInfo to pass into __ctor() call.
+
+Q:
+To run anchor test:
+
+1. anchor build
+
+2.
+The program id in the lib.rs is just a placeholder.
+After running anchor build, anchor will generate a program address keypair
+Run the following to get the address:
+solana address -k target/deploy/program/<program>-keypair.json
+Update the lib.rs program id with the actual program id
+Also update the Anchor.toml with the actual program id.
+
+3. Run solana-test-validator. DO NOT run solana logs it will interfere with Events for some reason
+
+4. anchor test
+  
+5. After test pass you can run:
+    anchor deploy
+
+# anchor test
+anchor test will spin up a solana-test-validator. It will also spin up a solana log reader,
+so that is why you cannot run a solana log concurrently. There is an option to skip running
+solana-test-validator

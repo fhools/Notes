@@ -1,0 +1,39 @@
+# Solana Programs
+Solana programs are Smart Contracts.
+
+# Solana Account
+Solana Programs OWNS Solana Account
+
+Account can hold data, e.g. balance of SOL.
+Accounts are solana data buffers
+
+Is referenced by Public Key ed25519.
+Only the owning program can modify account data.
+
+A Program Id = Public address of a Solana Program (Smart Contract)
+# Solana Transaction
+Comprised of array of signatures
+Message
+    Header
+    Signatures Count
+    Count of Read-only addresses that need signatures 
+    Count of Read-only addresses no signatures count
+    Array of addresses 
+    Previous block hash (merkle tree?)
+    Array of Instructions
+
+Instruction
+    Program ID -> Account parent that is holding the program data 
+    Array of accounts that program will access
+    Instruction Data (parameters): [u8]
+Comprised of array 
+
+
+# Solana Program
+Account 1 is the  Program (Code)
+Account 2 is the Client of Account 1. 
+
+
+
+
+

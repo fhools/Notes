@@ -1,0 +1,70 @@
+Solana allows a program to be upgraded.
+
+It does this by storing a header before the program's data.
+
+An program has a program buffer account, it stores a UpgradeableLoaderState in its data buffer.
+
+The program's data has a prefix before the actual bytecode
+
+UpgradableLoaderState
+
+Uninitialized:
+
+[UpgradeableLoaderState::Uninitialized]
+
+
+Buffer:
+[UpgradeableLoaderState::Buffer{
+    authority_address
+    }]
+[EBPF bytecode]
+
+Program:
+
+
+State Diagram
+
+Start state: Uninitialized
+
+Uninitialized transitions:
+Instruction: InitializeBuffer
+    Accounts: buffer account (is this the same account as program account??)
+              authority address
+Next state: UpgradeableLoaderState::Buffer { authority_address }
+
+
+Buffer transitions:
+Instruction: Write
+    Inputs:
+        Offset - offset to write data
+        Bytes - data buffer to write
+    Accounts: Buffer Account
+              Authority
+
+Buffer transition:
+Instruction DeployWithMaxDataLen
+    Inputs:
+        max_data_len = deploy with maximum data length
+    Accounts:
+        payer
+        Program Data Account
+        Program Account
+        Buffer
+        Rent
+        Clock
+        Authority
+    Creates a program data account that is a PDA of the program where the seed is the program_id
+    Copies the bytecode from buffer account into the  the Program Data account,
+    ProgramData header is set also.
+    Sets the program account's state to UpgradeableLoaderState::Program { programdata_address: PDA created }
+    Sets the executable bit on program account_info
+    Drains the buffer account balance to zero, by sending buffer's sol to payer.
+    Next state: Program {programdata_address}
+    
+
+
+
+        
+
+
+
