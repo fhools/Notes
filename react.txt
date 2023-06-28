@@ -1,4 +1,13 @@
-# To install and develop react via create-react-app.
-brew install node
-# Install create-react-app (v 2.1.2 is for Pro React 16 book
-npm install --global create-react-app@2.1.2
+# ESLint complaining that can't use import need reuqire
+
+# Make sure top-level package.json file has type set to commonjs
+"eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ],
+        "type": "commonjs"
+    },
+
+
+

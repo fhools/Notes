@@ -6,3 +6,27 @@ To enable ssh modify /etc/ssh/sshd_confif
 Set PasswordAuthentication to yes
 sudo systemctl restart ssh
 sudo systemctl restart sshd
+
+# After updating Ubuntu major version
+# Network didn't work, eth0 had no ip addresses config
+Update /etc/netplan/50-cloud-init.yaml with the following:
+sudo vim /etc/netplan/50-cloud-init.yaml
+```file
+network:
+    ethernets:
+        eth0:
+            addresses:
+            - <ip>/16
+            gateway4: <gateway ip>
+            match:
+                macaddress: <macaddress>
+            nameservers:
+                addresses:
+                - 8.8.8.8
+                - 9.9.9.9
+            set-name: eth0
+    version: 2
+```
+
+## Load the new configuration
+sudo netplan try --debug
