@@ -1,0 +1,20 @@
+install openssl tcl-tk 
+install xz library get its pkgconfig 
+brew ls shows pkg location
+
+export PKG_CONFIG= /opt/homebrew/opt/tcl-tk/lib/pkgconfig:$PKG_CONFIG
+
+export CPPFLAGS="-I$(brew --prefix gdbm)/include"
+export LDFLAGS="-L$(brew --prefix gdbm)/lib"
+
+#nanobind
+had to run cmake/collect_symbols.py
+also had to add __Py_INCREF_DecRefTotal and other file to the symbols list
+
+
+ ./configure --prefix=/Users/fhools/mambaforge/envs/py3.12dbg --with-pydebug --with-ensurepip=install --enable-shared
+ make -j100
+ make install
+
+
+

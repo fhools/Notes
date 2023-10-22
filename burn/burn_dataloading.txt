@@ -1,0 +1,47 @@
+When training in deep learning the data is split into a training set and a validation set.
+
+The training set is used during during each epoch, where an epoch is one run 
+through the whole training dataset.
+
+At the end of the epoch, the weights are upgraded and the model is then
+run through the validating set to compute its accuracy. where accuracy is relation to ground truth.
+
+
+The Dataset trait has a train() and a test() associated function that returns the correct dataset set.
+
+DataLoaderBuilder is passed this.
+
+
+# BatchDataLoader
+has the following:
+dyn BatchStategy 
+    Seems to be only one stategy so far, FixedBatchStategy  
+        Default FixedBatchStategy of batch size 1
+dyn Dataset - created by user
+dyn Batcher - created by user
+
+Will launch a buch of DataLoader on threads.
+
+
+# BatchStrategy
+Essential controls when a batch() call will actually return a batch.
+The only way it is affected is by the add() method being call to add an item.
+The user then calls batch after every add. The Batch Strategy (pretty much batch size)
+will then either return Some(Batch) or None. 
+
+The user can also force a batch() call to return whatever is accumulated in it's batch
+regardless of if it meets the batch size stategy
+
+# DataLoader
+Trait that BatchDataLoader implements.
+    Only has one method iter()
+    iter() returns a dyn DataLoaderIterator
+
+
+Currently there are two impl of DataLoader:
+    MultiThreadDataLoadaer
+    BatchDataLoader
+
+    The DataLoaderBuilder will create the MultiThreadDataLodaer if the 
+    num_worker optioni is set during Building, otherwise it instantiates
+    the BatchDataLoader

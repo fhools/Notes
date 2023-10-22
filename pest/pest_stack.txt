@@ -1,0 +1,31 @@
+pest has a interesting Stack data structure.
+
+The stack supports taking snapshots and restoring.
+
+The snapshots themselves are operate in a stack manner as well,
+meaning you can only restore the latest snapshot. But once you
+do that you can restore the previous snapshot.
+
+The snapshots are stored via two data 
+    A vector of tuples of (len_cache, and remaining).
+    A snapshot will use the current cache length as 
+    value for this tuples
+
+    The other data is a popped field. Every
+    time the user does a pop operation the
+    element if added to popped and the
+    remaining field of the last snapshot state
+    is decremented.
+
+During a restore the latest tuple is popped of the stack
+There are two cases that may have happened since the snapshot
+    User pushes more data onto stack.
+    If this is the case then the cache is truncated
+
+    User popped data from stack
+    If this is the case the popped data is used
+    to append back onto the stack.
+
+    Both cases it utilizes the tuple and does calculations
+    to determine how much to truncate and how much
+    of the popped data to put back on the stack

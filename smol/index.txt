@@ -1,0 +1,6 @@
+async-io::block_on
+
+block_on is in driver.rs, it is literally the event loop
+
+block_on takes a async function, really a Future  and will drive an loop that blocks, 
+executing the future. 

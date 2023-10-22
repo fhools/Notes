@@ -1,0 +1,1 @@
+# Apps are built via Local.mk makefile run in each component

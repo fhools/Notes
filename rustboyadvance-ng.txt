@@ -1,0 +1,232 @@
+arm7tdmi/src/cpu.rs:
+    Arm7tdmiCore<I: MemoryInterface>
+        contains registers
+        bus: Shared<I: MemoryInterface>
+            set_memory_interface()
+        banks: BankedRegisters
+            not sure what banked registers is for
+
+
+    Arm7tdmiCore implements MemoryInterface,
+        store_8(addr, value, access)
+            fowards to bus:
+                self.bus.store_8(addr, value, access)
+                    this forwards self.bios self.cartridge etc
+                    this also 
+       
+    store_8 and load_8 are from the cpu perspective 
+
+arm7tdmi/src/memory.rs
+    BusIO: trait
+        implements higher level bus read/write
+        users must implement the following:
+            fn read_8(&self, addr: Addr) -> u8;
+            fn write_8(&mut self, addr: Addr, value: u8)
+    structs implementing BusIO:
+        SimpleMemory
+        Cartridge
+        IoDevices
+        SysBus
+        Gpu
+        Box<[u8]>
+        Bios
+
+
+    impl<I: MemoryInterface> MemoryInterface for Arm7tdmiCore<I>
+       fowards to bus 
+
+core/src/sysbus.rs
+    struct SysBus
+        io: Shared<IoDevices>
+        arm_core: weak pointer back to Arm7tdmiCore
+        bios: Bios
+        ewram: Box<[u8]>
+        iwram: Box<[u8]>
+        cartridge
+
+    impls: 
+        MemoryInterface
+        BusIO
+            read_32():
+                forwards to self.bios.read_32
+        DmaNotifer
+            notify(self, timing)
+
+core/src/gba.rs
+    GameBoyAdvance struct
+        cpu: Box<Arm7tdmiCore<SysBus>>
+        io_devs: Shared<IoDevices>
+        sysbus: Shared<SysBus>
+        scheduler: SharedScheduler
+
+    GameBoyAdvance::new()
+        allocates all the shared components. clones them 
+
+
+core/src/sched.rs
+    Scheduler
+        Lets you schedule events to be  via self.schedule()
+        Lets you pop the next scheduled event via self.pop_pending_event()
+
+    EventType: enum 
+        RunLimitReached
+        Gpu(GpuEvent)
+        Apu(ApuEvent)
+        DmaActivateChannel(usize)
+        TimerOverflow(usize)
+
+
+core/src/dma.rs
+    DmaChannel
+    DmaController
+        channels: [DmaChanel; 4]
+        pending_set = Which DMA  is done and ready to transfer data
+            affects: perform_work()
+            tested via: is_active()
+        perform_work(&mut self, sb: &mut SysBus)
+            # this method has a chance to run in gba.rs::handle_events() via dma_step()
+            if pending_set is set, do a dma transfer
+            clear pending_set
+                
+                
+    DmaNotifer : trait
+        notify(self, timing: u16)
+
+        implemented by:
+            SysBus::notify
+
+    Dma
+                
+
+# How does DMA work?
+    DmaController has 4 dma channels 
+    DmaChannel has an id 0 to 3, its irq id is 8 + id, so 8 to 11 irq id
+
+# DmaNotifer: trait
+    used in:
+        Gpu::handle_hdraw_end<D: DmaNotifer>(&mut self, dma_notifier) 
+            raises interrupt flag
+            dma_notifier.notify(TIMING_HDRAW)
+            returns tuple of event and cycles 
+        Gpu::handle_hblank_end<D: DmaNotifer>(&mut self, dma_notifier) 
+
+    implemented by SysBus
+        SysBus::notify forwards back to IoDevices.dmac.notify_from_gpu(timing)
+            where timing is the timer id for HBLANK or VBLANK timer
+            DmaController::notify_from_gpu():
+                loops through the 4 dma channels, and if the dma channel is enabled
+                sets the pending_set flag for the matching dmactrl's timing field 
+
+    How DMA write works
+        ldr/str causes ldr/str instruction to execute
+        this forwards to SysBus's BusIO
+        SysBus BusIO write_16 does a match on address range
+        forwards to  IODevices's write_16
+            IODevices::write_16 will forward to 
+                io.dmac.write_16
+
+
+# GPU
+    on_event(&mut self, event: GpuEvent, dma_notifier: &DmaNotifer)
+        calls handle_XYZ_end()
+           
+
+
+# core/src/timer.rs
+    Looks like there are 3 timer frequency
+        1 cycle, 64, 256, 1024
+        freq is 0 to 3 2-bit register, so there is a SHIFT_LUT
+        that shows how many bits to shift cycles to 
+            
+            
+    Timers::handle_overflow_event()
+        calls self.handle_timer_overflow()
+
+    Timers::handle_timer_overflow(&mut self, id, apu, dmac)
+        calls timer.overflow()
+            raise interrupt for timer for self.irq 
+        calls handle_timer_overflow on next timer)
+        if the timer is 0 or 1
+            call apu.handle_timer_overflow()
+
+    Timers::prepare_next_overflow_event(id, start_time) -> FutureEvent
+        returns a TimerOverflow FutureEvent with the time it takes to overflow
+        will take the start time and 
+        caclulate how many cycles from the initial value when the timer will overflow
+        via ticks_to_overflow()
+
+    How does TimerEvent get generated?
+        Timers::write_timer_ctrl(&mut self, id, timer_ctrl_word_value, sched)
+            will write and schedule a new timeroverflow event 
+       
+    How timers get generated
+        gba::run()
+            pop off event from scheduler
+            calls handle_events()
+                if timeroverflow
+                    return new event from 
+                        handle_overflow_event()
+                            handle_timer_overflow()
+                            prepare_next_overflow_event()
+                    # schedule next timer event
+                    scheduler.schedule_at(new_event, new_event time) 
+                           
+
+arm7tdmi/src/exception.rs
+    Arm7tdmiCore::irq()
+        if irq enabled()
+            # lr is the instruction to return to after the interrupt
+            # handling code
+            lr = next instruction 
+            self.exception(IRQ, lr)
+
+
+    exception(e: Exception, lr: register)
+    # this will jump the CPU to the interrupt handling vectors
+       sets the cpu mode to be supervisor, or abort, or irq, fiq 
+       may also disable irq or fiq
+       gets the bank_index for the mode
+       stores cpsr in bank spsr
+       stores lr in bank r14
+       change cpu mode
+       sets the pc to value of e # interesting e must be a instruction address
+            pub enum Exception 
+                Reset: 0x00
+                Fiq = 0x1C
+                IRQ = 0x18
+
+# gba::run()
+    HaltState 
+        # Property of io_devs.haltcnt
+            Is the state of whether an IO device is running or not
+        
+        Stop - unsupported
+            
+        Running -  io devices are excecuting
+        Halt - CPU something to do with interrupt enable flag, 
+   
+    get_bus_master()
+    if get_bus_master returns BusMaster::Cpu
+        calls cpu_step():
+            if irq_pending then
+                run cpu::irq()
+                set haltcnt to Running
+            cpu.step()
+    else if get_bus_master returns BusMaster::Dma
+        calls dma_step():
+            calls iodevs.dmac.perform_work()
+                does dma transfer clears pending_set flag
+                # next time the is_active method will return flalse because pending_set is cleared
+
+    If we assume that REG_HALTCNT is never used, then the get_bus_master will ping pong between
+    BusMaster::Dma and BusMaster::Cpu
+
+    gba::run(cycles_to_run)
+        setup scheduler to return event at cycles_to_run cycles in the furure
+        loop until cycles to run event happens
+            call dma_step() and cpu_step() 
+            at the end of loop call handle_events()
+                handle_events will trigger gpu/apu/timer events, 
+                these events will be used to move forward in time by scheduling
+                a future event!
+

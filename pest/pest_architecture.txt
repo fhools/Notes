@@ -1,0 +1,34 @@
+# Pest Crate
+The pest crate is the main parser/lexer.
+
+# Meta crate
+The meta crate uses the pest sub-crate to parse the PEG parsing grammar.
+The meta crate has the PEG parsing grammar defined in grammar.rs which
+is generated via the grammar.pest grammar file. 
+This generated grammar.rs defines the PestParser.
+
+This PestParser has a parse() method that will return a Pairs result
+This Pairs data type can be considered as parse tree.
+
+The main way to utilize the Pairs is to define a AST enum, 
+The AST enum has one variant for each Rule, wher each Rule
+can be thought of as containing the structure of the AST nodes
+
+A common pattern is that there is a ParseExpr enum
+This ParseExpr enum contains Box's to ParseNode
+
+The ParseNode in turn contains a ParseExpr and other metadata like Span
+
+
+Since the ParseNode and ParseExpr are mutually recursive data structure
+this is how the the whole AST can be represented.
+
+
+# Meta crate AST
+Once a Pairs data type is returned, there needs to be something
+that can consume the Pairs data structure, which is the generic parse tree
+and  converts it into an AST, or any other data structure 
+
+See consume_rules()
+
+

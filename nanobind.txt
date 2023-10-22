@@ -1,0 +1,11 @@
+func_data stores information on function binding.
+In particular it stores the number of arg meta data that is encoded at compile time via template
+
+template func_data_prelim<SIZE> takes a Size template parameter that repreesents number of arg meta data
+at the end of the struct is the following field
+
+ arg_data args[Size];
+
+
+ func_data inherits from func_data_prelim
+ and it also has a pointer to args

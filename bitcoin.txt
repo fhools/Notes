@@ -1,0 +1,6 @@
+Taproot
+SegWit
+SegWit2x
+Lightning Network
+
+https://github.com/paritytech/parity-bitcoin/

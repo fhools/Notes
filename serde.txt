@@ -1,0 +1,5 @@
+Deserializer walks input string
+
+Passes in visitor with what it expects
+Visitor extracts out expected data
+Visitor calls back into deserializer MapAccess

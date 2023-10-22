@@ -1,0 +1,31 @@
+Poll lets you register event sources
+
+Example of event source is TcpListener
+
+TcpListener implements event::Source 
+
+
+TcpListener is actually a wrapper type of IoSource<std::net::TcpListener>
+
+
+tokio::net::TcpListener is in turn a wrapper of:
+PolledEvent<mio::net::TcpListener>
+
+
+# Who calls mio::Poll::turn?
+Tokio runtime::io::Driver has fn turn()  that calls poll.
+io::Driver owns a mio::Poll
+
+runtime::Driver::new()
+    create_io_stack instantiates a signal::Driver 
+
+current_thread::park_yield
+    runtime::Driver::park_timeout
+        Driver::inner
+            TimeDriver::park_timeout
+                runtime::time::Driver::park_timeout
+                    time::Driver::park_internal
+                        
+
+    
+

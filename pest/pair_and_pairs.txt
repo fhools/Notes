@@ -1,0 +1,118 @@
+Pair contains shared reference to original ParserState::queue, the input string,
+the index where it is located in queue, and a line_index
+
+# self.pair() -> usize
+This returns the index where you can find the pair's QueueableToken::End,
+which has the particular Rule and also where in the original input string
+the string ends QueueableToken::Start.input_pos is where it starts
+QueueableToken::End.input_pos is where it ends
+
+# Pairs definition:
+pub struct Pair<'i, R> {
+    /// # Safety
+    ///
+    /// All `QueueableToken`s' `input_pos` must be valid character boundary indices into `input`.
+    queue: Rc<Vec<QueueableToken<'i, R>>>,
+    input: &'i str,
+    /// Token index into `queue`.
+    start: usize,
+    line_index: Rc<LineIndex>,
+}
+
+# Pair defintion:
+pub struct Pair<'i, R> {
+    /// # Safety
+    ///
+    /// All `QueueableToken`s' `input_pos` must be valid character boundary indices into `input`.
+    queue: Rc<Vec<QueueableToken<'i, R>>>,
+    input: &'i str,
+    /// Token index into `queue`.
+    start: usize,
+    line_index: Rc<LineIndex>,
+}
+
+Pair and Pairs both reference the same queue and same input
+
+The start field in both is an index into the queue that they reference
+where this Pair or Pairs starts
+
+
+# Pair::to_inner() -> Pairs<'i, R>
+This will return a pair's inner pair.
+This is deceptively simple, it just increments the pair's start field. 
+Since a pair's children are adjacent to the parent pair in the queue 
+this works.
+
+# Pair::pair() and Pair::pair()
+Returns the last index into queue for the pair's index.
+implemented by accessing QueueableToken::Start::end_token_index
+
+# pair_from_end()
+It uses the self.end marker, but grabs the end - 1 because the end is 
+the one past end convention. See the following code that creates a pairs
+
+See the end argument is set to the length of the queue which is end + 1
+pub fn state<'i, R: RuleType, F>(input: &'i str, f: F) -> Result<pairs::Pairs<'i, R>, Error<R>>
+where
+    F: FnOnce(Box<ParserState<'i, R>>) -> ParseResult<Box<ParserState<'i, R>>>,
+{
+    let state = ParserState::new(input);
+
+    match f(state) {
+        Ok(state) => {
+            let len = state.queue.len();
+            Ok(pairs::new(Rc::new(state.queue), input, None, 0, len))
+        }
+
+Also see this code here:
+This code is part of ParserState where it updates the QueueableToken::Start
+end_token_index, and it sets it again to one past the end token
+let new_index = new_state.queue.len();
+                    match new_state.queue[index] {
+                        QueueableToken::Start {
+                            ref mut end_token_index,
+                            ..
+                        } => *end_token_index = new_index,
+                        _ => unreachable!(),
+                    };
+
+
+ this shows that new_index is set to the length of queue which is the end 
+
+# Pairs::pairs_count
+Pairs::pairs_count is just used to implement ExactIterator::len() method
+
+# Pairs::peek() will return next Pair unless the self.start is equal to self.end
+
+# How reverse iterator works in detail
+impl<'i, R: RuleType> DoubleEndedIterator for Pairs<'i, R> {
+    fn next_back(&mut self) -> Option<Self::Item> {
+        if self.end <= self.start {
+            return None;
+        }
+
+        self.end = self.pair_from_end();
+        self.pairs_count -= 1;
+
+        let pair = unsafe {
+            pair::new(
+                Rc::clone(&self.queue),
+                self.input,
+                Rc::clone(&self.line_index),
+                self.end,
+            )
+        };
+
+        Some(pair)
+    }
+}
+
+
+pair_from_end() will return the start pair using self.end - 1 as the index
+into the queue, since this is assigned to self.end, the next time next_back
+is called it will use self.end - 1 which means it goes to the pair 
+before this one.
+
+ The key parts of next_back is setting self.end to the start of the current token.
+ Then in self.pair_from_end it retreives the token at self.end - 1, essentially
+ the token before the current one. This is the key to the reverse iteration.

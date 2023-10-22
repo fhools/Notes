@@ -1,0 +1,81 @@
+## Snippet for initializing rodio and audio sink
+```rust
+    let (stream, stream_handle) =
+        rodio::OutputStream::try_default().expect("No audio output device available");
+
+    let sink = rodio::Sink::try_new(&stream_handle).expect("Failed to create audio sink");
+```
+
+## Setting up a rodio::Source impl AudioSource
+
+struct AudioSource {
+    sample_rate: u32,
+    channels: u16,
+    data: Vec<i16>,
+    cursor: usize,
+}
+
+impl Iterator for AudioSource {
+    type Item = i16;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.cursor >= self.data.len() {
+            return None;
+        }
+        let sample = self.data[self.cursor];
+        self.cursor += 1;
+        Some(sample as i16)
+    }
+}
+
+impl rodio::Source for AudioSource {
+    fn current_frame_len(&self) -> Option<usize> {
+        None
+    }
+
+    fn channels(&self) -> u16 {
+        self.channels
+    }
+
+    fn sample_rate(&self) -> u32 {
+        self.sample_rate
+    }
+
+    fn total_duration(&self) -> Option<std::time::Duration> {
+        None
+    }
+}
+
+
+## AudioBuffer data transport between emulator and host
+pub struct AudioBuffer {
+    pub sample_rate: u32,
+    pub channels: u16,
+    pub samples: Vec<AudioSample>,
+}
+
+impl Default for AudioBuffer {
+    fn default() -> Self {
+        Self {
+            sample_rate: 48000,
+            channels: 2,
+            samples: vec![],
+        }
+    }
+}
+
+impl AudioBuffer {
+    pub fn new(sample_rate: u32, channels: u16) -> Self {
+        Self {
+            sample_rate,
+            channels,
+            samples: vec![],
+        }
+    }
+}
+
+
+# Notes
+AudioBuffer is data from the emulator
+It gets turned into an AudioSource, by appending the left and right 
+channel data alternatively

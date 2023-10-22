@@ -1,0 +1,31 @@
+Certainly! Both `thiserror` and `anyhow` are popular error handling crates in the Rust ecosystem, but they are designed for different purposes. Let's break down their intended usages and why one might be preferred for libraries and the other for application code:
+
+### `thiserror`
+
+1. **Purpose**: `thiserror` is designed to make it easy to create custom error types for libraries. It provides a derive macro that simplifies the process of implementing the `std::error::Error` trait for these custom types.
+
+2. **Advantages**:
+   - **Clear Error Semantics**: Library authors can define specific error variants that users of the library can match against. This allows for precise error handling.
+   - **Interoperability**: By implementing the standard `Error` trait, errors from one library can easily interoperate with errors from other libraries or the Rust standard library.
+   - **No Additional Dependencies**: `thiserror` is a proc-macro library, meaning it doesn't add runtime dependencies or overhead. It's used at compile-time.
+
+3. **Usage in Libraries**: For libraries, it's beneficial to provide specific error types that users can match against and handle. This way, a user can decide how to handle specific error scenarios.
+
+### `anyhow`
+
+1. **Purpose**: `anyhow` is designed for general error handling in applications. It provides a type called `Error` that can wrap any error type. This makes it very flexible and convenient for application-level error handling.
+
+2. **Advantages**:
+   - **Flexibility**: It can handle and display errors from various sources without needing to define custom error types for every possible scenario.
+   - **Convenient Error Context**: `anyhow` allows for easy addition of context to errors, which can be useful for troubleshooting.
+   - **Simplifies Error Handling**: For applications (as opposed to libraries), you often don't need to match against every possible error variant. Instead, you might just want to log the error and exit. `anyhow` is perfect for this kind of use case.
+
+3. **Usage in Applications**: In application code, developers often prioritize catching errors, adding context, and reporting them, rather than acting on each specific error variant. `anyhow` streamlines this process.
+
+### Summary:
+
+- Libraries should provide clear, matchable error types so that users of the library can handle specific error scenarios. `thiserror` is designed for this purpose.
+  
+- Application code, on the other hand, often focuses on catching, logging, and possibly propagating errors. The type-erased nature of `anyhow` makes it a good fit for this scenario, as it can handle errors from various sources in a unified manner.
+
+By following the guideline of using `thiserror` for libraries and `anyhow` for applications, the codebase can leverage the strengths of each crate in their respective domains.

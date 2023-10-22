@@ -1,0 +1,116 @@
+# Burn has Datasets which load datasets from sources 
+The burn::data::dataset::source::huggingface::MNISTDataset is one such source of data
+
+# Batcher is a trait will create batches of a data input
+Batcher<I, O> 
+where I is the Input Item
+      O is the Output Batch Item
+
+The batcher trait has a batch(items: Vec<I>) where I is is generic type for the kind of items to batch
+It will return O where O is the Batch Item
+
+This batch method will prepare the data received in items e.g.:
+    - convert data to different value ranges
+    - reshape the tensor of data
+    - convert to different Data<E> types 
+
+    It will then return a BatchItem which is for example the images, and target labels
+
+#
+
+The DataLoaderBuilder takes in a Batcher and will pass in a dataset. The dataset is gotten from  
+Dataset trait impl. 
+The DataLoaderBuilder will call Dataset::get and collect enough for the BatchSize
+
+# HuggingFace Dataset
+impl Dataset<MNISTItem> for MNISTDataset {
+    fn get(&self, index: usize) -> Option<MNISTItem> {
+        self.dataset.get(index)
+    }
+
+    fn len(&self) -> usize {
+        self.dataset.len()
+    }
+}
+
+impl MNISTDataset {
+    /// Creates a new train dataset.
+    pub fn train() -> Self {
+        Self::new("train")
+    }
+
+    /// Creates a new test dataset.
+    pub fn test() -> Self {
+        Self::new("test")
+    }
+
+    fn new(split: &str) -> Self {
+        let dataset = HuggingfaceDatasetLoader::new("mnist")
+            .dataset(split)
+            .unwrap();
+
+        let dataset = MapperDataset::new(dataset, BytesToImage);
+
+        Self { dataset }
+    }
+
+}
+
+HuggingFaceDatasetLoader loads the train or the test dataset from Hugging Face.
+# BytesToImage
+    Takes raw bytes to some image -> MNISTItemRaw -> MNISTItem
+# MappedDataset
+type MappedDataset = MapperDataset<SqliteDataset<MNISTItemRaw>, BytesToImage, MNISTItemRaw>;
+
+This is saying a MappedDataset will have a 
+    Source of data - This case an sqlitedatabase that will return MNISTItemRaw
+    BytesToImage - This is a mapper that will take the raw data and convert it into MNISTItem
+    MNISTItemRaw - The type of the raw data
+
+
+/// MNIST dataset from Huggingface.
+///
+/// The data is downloaded from Huggingface and stored in a SQLite database.
+pub struct MNISTDataset {
+    dataset: MappedDataset,
+}
+
+The MNISTDataset utilizes a HuggingFaceDatasetLoader 
+
+fn MNISTDataset::new(split: &str) -> Self {
+        let dataset = HuggingfaceDatasetLoader::new("mnist")
+            .dataset(split)
+            .unwrap();
+
+        let dataset = MapperDataset::new(dataset, BytesToImage);
+
+        Self { dataset }
+    }
+
+Since MapperDataset is passed in a datset, this dataset must be SqliteDataset<MNISTItemRaw>
+
+SqliteDataset has code that expects the data to be in row where the columns match the fields of MNISTItemRaw (or there is a column 'item' which is 
+type blob, which can be deserialized via Serde?)
+
+# dataset::source::huggingface
+
+The HuggingDataFaceDatasetLoader::dataset 
+MappedDataSet to retrieve 
+
+HuggingfaceDataSetLoader actually loads data into an Sqlite database via some importer.py script
+
+Some interesting things:
+    Uses venv to install these python libraries:
+        - pyarrow
+        - sqlalchemy
+        - Pillow
+        - soundfile
+        - datasets
+
+    It first checks to see if venv is runnning (does VENV env and dir work out)
+    runs venv to create python distribution
+    runs pip install of those packages above
+
+## importer.py
+uses datasets.load_datasets
+

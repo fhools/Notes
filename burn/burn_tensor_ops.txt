@@ -1,0 +1,32 @@
+# trait BasicOps
+Tensors implement some basic operations (these are not arithmetic).
+tensor/api/base.rs
+
+
+# Separation of struct creation bound and impl bound
+The Tensor is a struct that has generic bound K: TensorKind
+
+The impl Tensor has a different bound K: BasicOps<B>
+
+This is interesting, this means that struct creation can have different bounds
+than the impl blocks
+
+The BasicOps trait is a subtrait of TensorKind
+
+The operations on a Tensor forward to the BasicOps implementations
+
+# TensorOps
+The main trait for Tensor operations is the TensorOps trait
+burn-tensor crate
+src/ops/tensor.rs
+
+In each backend you can find the TensorOps impl in:
+src/ops/tensor.rs
+
+The TensorOps trait have associated functions, meaning they do not implement
+a trait object. Its more of associated tensor operations that all take
+The TensorPrimitive impl 
+
+
+
+

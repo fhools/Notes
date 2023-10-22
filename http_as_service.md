@@ -37,3 +37,18 @@ sudo systemctl start http_server.service
 
 # status 
 sudo systemctl status http_server.service
+
+# create certificate
+# this will put certs in /etc/letsencrypt/live/domain.com/
+# this requires to run as port 80, so stop your web service first
+sudo certbot --standalone  -d domain.com
+
+# create script to deploy certs
+
+# run renewal in cronjob
+
+sudo crontab -e
+```
+0 */12 * * * certbot renew --pre-hook "systemctl stop your-service" --post-hook "systemctl start your-service" --deploy-hook deploycerts.sh --quiet
+```
+

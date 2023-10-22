@@ -1,0 +1,8 @@
+install openssl tcl-tk 
+
+export PKG_CONFIG= /opt/homebrew/opt/tcl-tk/lib/pkgconfig:$PKG_CONFIG
+
+
+#nanobind
+had to run cmake/collect_symbols.py
+also had to add __Py_INCREF_DecRefTotal and other file to the symbols list

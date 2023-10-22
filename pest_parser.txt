@@ -1,0 +1,81 @@
+# PrattParser
+Operators are a linked list data structure, such that operations with the same precedence
+can be chained together
+
+struct Op<R> {
+  rule: R,
+  affix: Affix, // postfix, prefix, infix(assoc)
+  next: Option<Box<Op<R>>>
+  }
+
+When inserting a operator it could bea single or a compound
+op is a builder pattern, it will insert the Op into the parser for the rule
+parser.op(Op{ Rule:foo, Infix , None })
+
+It can also be chained when its inserted like follows
+parser.op(Op { Rule::bar, Infix, None } | Op { Rule::baz, Infix, None })
+
+When it is chain the data structure looks like follows
+
+bar:
+Op {
+  rule: rule::bar, 
+  affix: None
+  next: -----> Option()  [ Op { rule: rule::baz, Infix, None } ]
+  }
+Notice that bar contains a next link to baz
+
+
+Inside the op builder method this is when the Op chain is traversed 
+so that it can insert the entry for the rule into the ops BTree
+```rust
+pub fn op(mut self, op: Op<R>) -> Self {
+        self.prec += PREC_STEP;
+        let mut iter = Some(op);
+        while let Some(Op { rule, affix, next }) = iter.take() {
+            match affix {
+                Affix::Prefix => self.has_prefix = true,
+                Affix::Postfix => self.has_postfix = true,
+                Affix::Infix(_) => self.has_infix = true,
+            }
+            self.ops.insert(rule, (affix, self.prec));
+            iter = next.map(|op| *op);
+        }
+        self
+    }
+```
+
+The while loops starts at the first option, then it inserts that rule,
+then it sets the iter to point to the next Op entry if any.
+At the end of the loop, each Op in the Op chain is inserted into the rule, and they have
+the same precedence. Notice the prec is incremented at the beginning for each call to op()
+so those chained Ops will have the same precendence value
+
+# Precendence 
+Higher = Greater predence, e.g. binds tighter
+Each call to pratt parser has a precendence limit, which states that that call can only
+parse operators that have a higher precedence
+
+So if 2 operators + and - have same level, then if we want + to bind to the right
+then we pass in a predecence that is prec - 1, then in that call it will parse
+the oeprator 
+a + b + c is normally (a+b) + c
+
+But if parses with right assoc then 
+a + (b + c), because the while loop keeps going instead of returning early. See
+```rust
+    fn expr<P: Iterator<Item = Pair<'i, R>>>(&mut self, pairs: &mut Peekable<P>, rbp: Prec) -> T {
+        let mut lhs = self.nud(pairs);
+        while rbp < self.lbp(pairs) {
+            lhs = self.led(pairs, lhs);
+        }
+        lhs
+    }
+```
+# Bootstrapping process
+There is a bootstrap process that
+bootstrap crate
+    Will generate grammar.rs file in meta/src/grammar.rs. 
+    This file defines the PestParser struct. The PestParser understands the Peg Parser grammar
+
+

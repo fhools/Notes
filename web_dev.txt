@@ -1,0 +1,17 @@
+Interesting tech stuff from Oxide Computers Oxide And Friends talk, frontend  chat 
+
+# Playwright
+end-to-end testing of web apps
+
+# Vite
+javascript bundler
+
+# Mocking
+In particular, tooling to keep mocks in compliant with OpenAPI spec of your API
+
+# Kent C Dodds
+Good teacher has courses on javascript 
+
+
+# Prisma.io
+Database abstraction layer and ORM

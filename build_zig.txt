@@ -1,0 +1,2 @@
+cmake .. -DZIG_STATIC_LLVM=ON -DCMAKE_PREFIX_PATH="$(brew --prefix llvm);$(brew --prefix zstd)"
+cmake .. -DCMAKE_BUILD_TYPE=ReleaseFast -DZIG_STATIC_LLVM=ON -DCMAKE_PREFIX_PATH="$(brew --prefix llvm@15);$(brew --prefix zstd)"

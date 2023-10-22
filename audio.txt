@@ -1,0 +1,36 @@
+Pulse Code Modulation
+Sample of audio fixed distance apart, a fixed number of possible values 
+Nyghist Frequency. The highest sampling rate that can be encoded. Nyghist frequency is half the sampling rate
+# Parameters
+## 
+Sample Rate
+8khz is lowest for 4khz audio
+
+## Encoding formats
+8-bit linear
+8-bit a-law u-law 
+    14 bits encoded into 8 bit by sample higher frequency further apart
+
+8-bit encoding usually uses 8khz sampling rate
+
+
+16-bit or 24-bit
+    negative infinity to 0 decibals
+    maximum absolute value corresponds to 0 decibals
+
+
+32-bit float
+    1 (0 dB) to -1 (0 dB) 24-bits of resolution
+    does not cause clipping
+
+
+# Number of channels
+Interleaving pcm channels in one stream
+
+
+Raw audio is  1.4 Mbps
+
+Raw vidceo 1080i 700 Mbps 
+
+
+

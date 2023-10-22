@@ -1,0 +1,23 @@
+A backend has associated types
+    TensorPrimitive
+    IntTensorPrimitive
+    BoolTensorPrimitive
+
+    Device 
+
+    FullPrecisionBackend
+    FullPrecisionElem
+
+# TensorPrimitive
+TensorPrimitive is not actually a trait but an associated type. Each
+backend has its own TensorPrimitive type.
+
+It is implemented by a plain struct in each backend.
+PyTorch backend
+    TensorPrimitive type is  TchTensor 
+
+NdArray backend
+    TensorPrimitive type is NdArrayTensor
+    
+ 
+

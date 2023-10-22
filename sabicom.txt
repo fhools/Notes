@@ -1,0 +1,147 @@
+# cpu.rs
+struct Cpu
+    register: Register -- registers
+    nmi_prev: bool -- non-maskable interrupt previous flag
+
+trait called Context
+it is essentially the following:
+
+trait Context {}
+impl <T: context:Bus + 
+         context::MemoryController +
+         context::Mapper +
+         context::Interrupt +
+         context::Timing> Context for T {}
+
+The blanket implementation lets the user pass in object implementing all of those traits 
+as a context::Context 
+
+cpu has the following methods that takes a impl Context:
+
+fn reset(&mut self, &mut impl Context);
+fn exec_interrupt(&mut self, ctx: &mut impl Context, interrupt: Interrupt, brk: bool) ;
+fn read(&mut self, ctx: &mut impl Context, addr: u16) -> u8;
+fn read(&mut self, ctx: &mut impl Context, addr: u16) -> u8
+fn write(&mut self, ctx: &mut impl Context, addr: u16, data: u8) 
+fn fetch8(&mut self, ctx: &mut impl Context) -> u8 
+fn fetch16(&mut self, ctx: &mut impl Context) -> u16 
+fn push8(&mut self, ctx: &mut impl Context, data: u8)
+fn push16(&mut self, ctx: &mut impl Context, data: u16)
+fn pop8(&mut self, ctx: &mut impl Context) -> u8
+fn pop16(&mut self, ctx: &mut impl Context) -> u16
+
+
+# context.rs 
+trait Cpu {
+    fn cpu(&self) -> &cpu::Cpu;
+    fn cpu_mut(&mut self) -> &mut cpu::Cpu;
+
+    fn reset_cpu(&mut self);
+    fn tick_cpu(&mut self);
+}
+
+There is a Context struct:
+
+
+
+#[derive(Delegate, Serialize, Deserialize)]
+#[delegate(Bus, target = "inner")]
+#[delegate(Ppu, target = "inner")]
+#[delegate(Apu, target = "inner")]
+#[delegate(Mapper, target = "inner")]
+#[delegate(MemoryController, target = "inner")]
+#[delegate(Rom, target = "inner")]
+#[delegate(Interrupt, target = "inner")]
+#[delegate(Timing, target = "inner")]
+pub struct Context {
+    cpu: cpu::Cpu,
+    inner: Inner,
+}
+
+
+This context struct also implements Bus, Ppu, Apu, Mapper, MemoryCotroller, Rom, 
+Interupt, Timing traits via ambassadar trait delegation
+
+
+The line above is saying that the Bus trait is implemented by the inner object.
+All Bus trait methods should be forwarded to inner.
+
+
+It implements a Cpu trait:
+impl Cpu for Context {
+    fn cpu(&self) -> &cpu::Cpu {
+        &self.cpu
+    }
+    fn cpu_mut(&mut self) -> &mut cpu::Cpu {
+        &mut self.cpu
+    }
+
+    fn reset_cpu(&mut self) {
+        self.cpu.reset(&mut self.inner); ctx:
+    }
+    fn tick_cpu(&mut self) {
+        self.cpu.tick(&mut self.inner);
+    }
+}
+
+The Inner struct implements the directly implements the Bus trait, all the other traits that the Context struct
+said it also implemented is done via another delegation:
+#[derive(Delegate, Serialize, Deserialize)]
+#[delegate(Ppu, target = "inner")]
+#[delegate(Apu, target = "inner")]
+#[delegate(Mapper, target = "inner")]
+#[delegate(MemoryController, target = "inner")]
+#[delegate(Rom, target = "inner")]
+#[delegate(Interrupt, target = "inner")]
+#[delegate(Timing, target = "inner")]
+struct Inner {
+    mem: memory::MemoryMap
+    inner: Inner2
+}
+
+impl Bus for Inner {
+....
+}
+
+This pattern is repeated for Inner2
+Inner2 struct owns a ppu, and apu, it implements the Apu and Ppu traits directly. 
+Inner2 also owns a Inner3.
+It delegates Mapper, MemoryController, Rom, Inteerrupt, Timing to the Inner3
+
+
+Inner3 struct owns a Mapper. So it implements the Mapper trait directly.
+It owns a Inner4 and delegates MemoryController, Rom, Interrupt, Timing to Inner4
+
+
+Inner4 struct owns MemoryController, Rom, Signals and a now: u64 field which may be time
+Inner4 implements MemoryController, Timing since it owns MEmoryController and now 
+It delegates  Rom and Signals to the fields
+
+
+Why does sabicom implement this nesting of Inner context. Couldn't context itself just own 
+all the different objects itself?? 
+
+
+
+
+# ppu.rs
+Ppu object has a frame_buffer object that comes from meru_interface::FrameBuffer
+
+Ppu object has a line_buffer which where it draws the current line to screen
+This object is how it writes the frame data for display
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

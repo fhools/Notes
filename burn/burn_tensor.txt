@@ -1,0 +1,117 @@
+A Tensor is specific to backend
+
+# Tensor data is instantiated from Data
+
+# Data
+Data generic over E and D 
+E probably stands for Element trait
+D dimensions count
+
+# Data  struct
+## fields
+    value: Vec<E>
+    shape: Vec<usize>
+
+Data looks to store all its data as Vec<E>
+So it can store elements in one vector
+
+It also has a shape. So you know what the Shape of the tensor is.
+
+# Data::from methods 
+Data implements a fron method from trait that implements From<&DataSerializ<E>> 
+
+It also implements a series of From for arrays and multi dimension arrays up to 4 dimensions:
+
+```rust
+impl<
+        E: core::fmt::Debug + Copy,
+        const A: usize,
+        const B: usize,
+        const C: usize,
+        const D: usize,
+    > From<[[[[E; D]; C]; B]; A]> for Data<E, 4>
+{
+    fn from(elems: [[[[E; D]; C]; B]; A]) -> Self {
+        let mut data = Vec::with_capacity(A * B * C * D);
+
+        for elem in elems.into_iter().take(A) {
+            for elem in elem.into_iter().take(B) {
+                for elem in elem.into_iter().take(C) {
+                    for elem in elem.into_iter().take(D) {
+                        data.push(elem);
+                    }
+                }
+            }
+        }
+
+        Data::new(data, Shape::new([A, B, C, D]))
+    }
+}
+```
+
+There's some cool stuff here:
+ - Integer generic parameters.
+ - elem loop index is shadowed multiple times
+
+
+# DataSerialize
+It has the same fields as Data.
+It also has derive attributes of serde Serialize/Deserialize
+
+Why would this? Maybe to separate out serialization from main type 
+
+
+# Element
+A trait that doesn't have any methods. It just subtrait of some traits that do have methods
+pub trait Element:
+    ToPrimitive
+    + ElementRandom
+    + ElementConversion
+    + ElementPrecision
+    + core::fmt::Debug
+    + core::fmt::Display
+    + Default
+    + Send
+    + Sync
+    + Copy
+    + 'static
+{
+}
+
+This is a very interesting thing. Its a way to bundle traits together. So that when you write
+generic functions you don't have to keep specifying bounds
+
+ToPrimitive can convert to primitive types like i32/i64/f32/f64 etc
+
+
+# TchTensor
+pub struct TchTensor<E: tch::kind::Element, const D: usize> {
+    /// Handle to the tensor. Call methods on this field.
+    pub tensor: tch::Tensor,
+    /// The tensor's storage
+    pub storage: StorageRef,
+    phantom: PhantomData<E>,
+}
+
+This has an example of PhantomData use. In this case this is to allow the struct to be generic over E.
+The other fields dont actually reference E.  This is to distinguish between tensors of different Element
+types
+
+The storage is some kind of associated pointer that separates out the Tensor 
+from it's storage. Because a tensor may be a slice/view of another Tensor
+
+# Usage of mut value arg that actually modifieds data in place
+There is some code that modifies a tensor in-place via a closure
+e.g in this code:
+fn exp<const D: usize>(tensor: TchTensor<E, D>) -> TchTensor<E, D> {
+        tensor.unary_ops(|mut tensor| tensor.exp_(), |tensor| tensor.exp())
+    }
+
+The arg to the first closure is |mut tch::Tensor|, what is interesting is that 
+the Tensor is modified in place, and the same tensor is then returned back again.
+This is kind of interesting use because it gets around having a mutable reference.
+The data is moved into closure, then moved out again you would think its dropped,
+but it is not so this is an interesting way to get around borrow checker
+A TchTensor has 
+    tensor: tch::Tensor
+    storage: StorageRef (Rc<*mut c_void>

@@ -1,0 +1,33 @@
+Cpu context
+    trait_alias!(pub trait Context = context::Bus + context::InterruptFlag);
+
+Bus context
+    trait_alias!(pub trait Context =
+    context::Rom + 
+    context::ExternalRam + 
+    context::Vram +
+    context::Oam + 
+    context::Ppu + 
+    context::Apu + 
+    context::InterruptFlag + context::Model);
+
+
+Ppu context
+    trait_alias!(pub trait Context = context::Vram + 
+                                     context::Oam + 
+                                     context::InterruptFlag + 
+                                     context::Model);
+
+Io
+    trait_alias!(pub trait Context = 
+        context::InterruptFlag + 
+        context::Ppu + 
+        context::Apu + 
+        context::Model);
+
+Mbc
+    trait_alias!(pub trait Context = context::Rom +
+                                    context::ExternalRam);
+
+Serial
+    trait_alias!(pub trait Context = context::InterruptFlag);

@@ -1,0 +1,70 @@
+# Deep dive into Python logging
+
+Python logging consist of a hierarchy of Logger channels
+
+# Logger class
+Represents one channel of logging
+
+The Logger's name consist of a path representing hierarcy of logging.
+For example 'inputs.csv', or 'inputs.xls'
+
+
+# Handler class
+Represents a log channel handler. 
+A Handler actually does something to the logs outputed on a Logger channel
+
+## Standard Handler classes
+  - StreamHandler
+  - FileHandler 
+  - StreamHandler
+  - _StderrHandler
+
+# Filterers
+Both Handler and Logger are derived from Filterers
+    Filterers let you add and remove filters
+    It also has a filter method that utilizes the filters 
+
+
+# Filter
+Is a default filter whose behavior is allow
+loggers below its path in the hierarchy. 
+That is, this Filter will filter based on it's name
+and the record it is filter. That is record.name must
+be a child of the Filter instance name
+
+# getLogger
+getLogger will look up in the Logger Manager dictionary
+a given Logger.
+
+Note: In the explanation below instantiate Logger
+really means instantiate the loggerClass or _loggerClass
+Logger class, it may be set to a Logger derive class.
+
+If the logger doesn't exist it will create the Logger, 
+after it inserts it into the dictionary, it will class
+_fixupParent which will instantiate PlaceHolder logger
+instances along the parent path up to root.
+
+If the logger sees that the placeholder is already there
+it will instantiate Logger and insert it into dict in its place. Then it will
+fix up the children and then the parent. Followed by parents 
+
+# Fixing up parents
+Make sure that a logger has parent components along the 
+path up to root. Parents will be PlaceHolder by default
+Set the parent of the logger to the earliest actual Logger
+derive class that it finds on the way up to root.
+If there is no actual Logger instance, and then the 
+root Logger will be it's parent. (This is why in fix up children
+the  child's parent's name may not start with name of alogger.) 
+
+# Fixing up children
+Fixing up the children means take the placeholder
+that was already there. Grab all the children that
+the placeholder has kept track of. Set the parent
+of those children to the newly created Logger instance
+
+.parent will alawys be a non PlaceHolder! Due to _fixupParent
+looking for only Logger instances
+
+    

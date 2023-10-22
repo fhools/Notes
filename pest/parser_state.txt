@@ -1,0 +1,110 @@
+# ParserState
+Holds the main parsing state.
+
+# The entry point to ParserState  is the state() method. 
+The state method in ParserState creates a new ParserState instance and runs the passed in parsing closure.
+The parse method created by the derive macro for the FooGrammar::parse() method takes
+a rule. This rule is matched in the state closure and acts as a entry point
+
+A common pattern is:
+
+impl Parser<Rule> for FooParser {
+
+    fn parse<'a, 'i>(&'a self, rule: Rule, input: &'i str) {
+        ::pest::state(input, |s| {
+            match rule {
+                Rule::MyRule => my_rule(s),
+                ..
+                ..
+            }
+        })
+    }
+
+In the above FooParser is the generated parsing code from derive macros
+
+my_rule is a parsing function that takes ParserState and returns new ParserState
+there is a parsing function for each rule of the grammar.
+
+In the above the user is expected to call parse with the top level rule for the grammar
+
+This top level grammar for peg parser may return a pairs who's into_inner would be a sequence of pairs.
+
+# The return value for parsing gives you a Pairs object. 
+Pairs object is pretty cool, it is a list of Pair which splits the tokens into a tree
+where each pair is made up of the start and the end index of the tokens that make up that parse expression.
+The pairs is nested, such that the following parse tree:
+    a + b + c
+    Let say you had a rule that had
+    expr = primary | + primary |+
+
+    This could be a pair of
+    pair: a + b + c
+       pair: a  + b
+            pair: a
+            pair +
+            pair b
+       pair: + c
+          pair: +
+          pair: c
+
+Each pair is made up of a rule and the tokens that it spans
+
+
+All the pairs are stored in ParserState::queue field.
+
+A pair is made up of a QueueableToken, which can be a QueuableStart or QueuableEnd
+The only way for a pair to be created is in ParserState::rule()
+The QueuableToken:
+pub enum QueueableToken<'i, R> {
+    Start {
+        end_token_index: usize,
+        input_pos: usize,
+    },
+    End {
+        start_token_index: usize,
+        rule: R,
+        tag: Option<Cow<'i, str>>,
+        input_pos: usize,
+    },
+}
+
+The input_pos is the input into the original string,
+The start_token_index and end_token_index is the position in the self.queue
+
+The data structure for  pair would look like
+where rule a is a a + b rule matching expr
+0: [ rule: a , end: 7]              // expr: a + b
+1: [ rule: primary, end: 2]         // primary: a
+2: [ rule: primary, start: 1]       
+3: [ rule: operator, end: 4]        // operator: + 
+4: [ rule: operator, start: 3]
+5: [ rule: primary, end: 6]         // primary: b
+6: [ rule: primary, start: 5]
+7: [ rule: a , end: 0]              // end of expr: a + b
+
+if it was (a + b) + c
+0: [ rule: a, start: 0]
+1: [ rule:
+
+# Token/Tokens
+Once you have a parsed via ParserState you get back a Pairs
+From this Pairs you can call tokens() to get back a list of Token
+The Token describes the Rule and the position in the original string
+pub enum Token<'i, R> {
+    /// The starting `Position` of a matched `Rule`
+    Start {
+        /// matched rule
+        rule: R,
+        /// starting position
+        pos: Position<'i>,
+    },
+    /// The ending `Position` of a matched `Rule`
+    End {
+        /// matched rule
+        rule: R,
+        /// ending position
+        pos: Position<'i>,
+    },
+}
+
+

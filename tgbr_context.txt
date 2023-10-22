@@ -1,0 +1,71 @@
+struct Context
+    cpu
+    InnerContext0
+
+    delegagtes implements:
+        Rom
+        Ppu
+        Apu
+        Model
+        Vram
+        Oam
+        ExternalRam
+        InterruptFlag
+
+struct InnerContext0
+    bus
+    InnerContext1
+
+
+    delegates implements:
+        Rom
+        Ppu
+        Apu
+        Model
+        Vram
+        Oam
+        ExternalRam
+        InterruptFlag
+
+    implements:
+        Bus
+
+struct InnerContext1
+    rom
+    ppu
+    apu
+    InnerContext2 
+
+    delegate implements:
+        Model
+        Vram
+        Oam
+        ExternalRam
+        InterruptFlag
+
+    implements:
+        Rom
+        Ppu
+        Apu
+
+
+struct InnerContext2
+    model
+    running_mode
+    vram
+    vram_lock
+    oam
+    oam_lock
+    external_ram
+    interrupt_enable
+    interrupt_flag
+    stall_cpu
+    wake
+
+    implements
+        Model
+        Vram
+        Oam
+        ExternalRam
+        InterruptFlag
+    
