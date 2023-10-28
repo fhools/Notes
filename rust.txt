@@ -33,3 +33,7 @@ vim ~/.cargo/config
 rustflags = ["-C", "link-arg=-fuse-ld=/usr/local/bin/zld"]
 ```
 
+# rust-analyzer
+install via:
+    brew install rust-analyzer
+    (Note: probably not correct to install via brew, shouldnt it be sync with current rust compiler?)

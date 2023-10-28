@@ -9,3 +9,99 @@ at the end of the struct is the following field
 
  func_data inherits from func_data_prelim
  and it also has a pointer to args
+
+
+# nb_descr.h
+nb_descr contains classes used to generate compile time strings.
+In particular the desc<N,Ts...> template struct defines a way to associate
+a string, and multiple types, to be used as arguments for placeholders
+in the string.
+
+For types that do not have a type_caster , the make_caster::Name is defined to be
+call cast<T>(), which generates a descr<1,T> which is a constant string
+and a typefor the type. For all other types
+that do define a type_caster the Name will be just a descr<N> instance,
+which is a constant string without any type information. Along with that the
+string value for descr<1,T> will be '%'.
+
+the descr<N,T> type also has operator overloads defined for it
+so that calling code can add 2 descr<N,T> types and get a descr<N+M, T1,T2>.
+Which would create a descr<N,Ts> type with 2 types. This allows
+for the code in func_create() to build up one long descr of all arguments of a
+function F. In particular it uses a template unary fold expression
+on a template paramater pack of the argument types.
+
+The following is the line that uses the parameter pack
+```cpp
+static constexpr auto descr =
+        const_name("(") +
+        concat(type_descr(
+            make_caster<remove_opt_mono_t<intrinsic_t<Args>>>::Name)...) +
+        const_name(") -> ") + cast_out::Name;
+```
+
+In the end the descr<N,T>::put_types() method is called
+These types are then used in put_types() call to fill in the std::type_info*
+in the descr_types field of func_data
+
+Then in nb_func_render_signature, it will loop through all the string
+and generate a function description. But for entries where there is a
+'%' string, it will look up the associated std::type_info entry
+that was put in by put_types call.
+
+My misunderstanding was that there was an associated entry in
+descr_types for every argument of a function that was passed in.
+This is not the case! Only some arguments will have an entry
+others can be determined right away. This makes sense because
+for types that have a binding, the type name may have to look up
+the python's __module__ and __qualname__ attributes to get the
+final name.
+
+
+# The above, but improved by chatgpt
+Certainly! Here’s a revised explanation:
+
+The `nb_descr` namespace encompasses classes designed for generating strings at
+compile-time. A key structure within this namespace is `descr<N, Ts...>`, a
+template struct that binds a compile-time string with a variadic list of types.
+This binding facilitates the integration of type information directly into the
+string.
+
+When dealing with types that lack a corresponding `type_caster`, the associated
+`make_caster::Name` is configured to invoke `cast<T>()`, resulting in a
+`descr<1, T>` instance. This instance encapsulates a constant string alongside
+the respective type. Conversely, for types that possess a `type_caster`, `Name`
+manifests as a `descr<N>` instance, entailing a constant string devoid of type
+information. It’s important to note that for `descr<1, T>`, the string content is set to "%".
+
+The `descr<N, Ts>` type is further enriched with operator overloads, enabling 
+the concatenation of two `descr<N, Ts>` instances to yield a `descr<N+M, T1, T2>`.
+This concatenation process effectively combines the string content while
+aggregating the type information. This mechanism is pivotal in `func_create()`,
+where it’s utilized to construct a comprehensive `descr` instance representing
+all the function arguments. The construction relies on a unary fold expression
+applied to a template parameter pack, as illustrated below:
+
+```cpp
+static constexpr auto descr =
+        const_name("(") +
+        concat(type_descr(
+            make_caster<remove_opt_mono_t<intrinsic_t<Args>>>::Name)...) +
+        const_name(") -> ") + cast_out::Name;
+```
+
+Subsequent to constructing the `descr`, the `descr<N, T>::put_types()` method
+is invoked to populate the `std::type_info*` array in the `descr_types` field
+of `func_data`
+
+In the runtime phase, `nb_func_render_signature` iterates over the descriptor
+string to generate the function signature. When encountering a '%' in the
+string, it retrieves the corresponding `std::type_info` from the `descr_types`
+array, filled earlier by `put_types`.
+
+It is crucial to understand that not every argument in a function results in an
+entry in the `descr_types` array. Only specific arguments necessitate this
+association, while others are directly determined. This design choice is pragmatic,
+especially for bound types, as it may require fetching Python-specific attributes
+like `__module__` and `__qualname__` to accurately construct the type name for
+the signature.
