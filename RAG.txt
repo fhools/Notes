@@ -1,0 +1,16 @@
+# RAG
+Retrieval Augmented Generation
+
+This is system that uses an external data source(e.g. a vector database) to 
+search an external dataset for relevenat information that can be used to 
+augment (add more context) to a prompt that is then fed into a LLM model.
+
+# Vector Database
+An database of embeddings that can be searched using a query vector.
+The embedding is a a way to represent a subspace of knowledge as a
+lower dimensional vector. For example a vector database of words
+in a dictinoary, the vectors that represent all colors may be 
+clustered together in a subspace of the vector database.
+
+
+

@@ -1,0 +1,7 @@
+# iterators/line_index.rs:LineIndex
+
+# LineIndex
+A data structure that allows quick computation
+of a (line, col) coordinate from a position offset
+into a string. This is accomplished by pre-computing
+a vector of offsets to each new line in the string.

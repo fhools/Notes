@@ -4,3 +4,8 @@ SegWit2x
 Lightning Network
 
 https://github.com/paritytech/parity-bitcoin/
+
+
+# Build
+export PKG_CONFIG-PATH=$(brew --prefix libevent)/lib/pkgconfig/
+./configure

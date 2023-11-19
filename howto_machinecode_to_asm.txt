@@ -1,0 +1,7 @@
+# You can use nasm to specify machine code bits to disassemble
+cat > test.asm
+[bits 64]
+db 0x48, 0x39, 0xc1
+
+nasm test.asm
+0000000 4839C1     cmp rcx, rsx

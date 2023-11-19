@@ -6,9 +6,9 @@ git remote show origin
 git init
 git add
 git commit
-git remote add origin remote <GITHUB URL>
+git remote add origin <GITHUB URL>
 
-git push -f origin master
+git push -f origin main
 
 
 # To use github credentials from system
@@ -18,3 +18,5 @@ git config --global credential.helper osxkeychain
 # On Windows
 git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-manager-core.exe"
 
+# See all developers in repo
+git shortlog -sne

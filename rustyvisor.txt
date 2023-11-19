@@ -1,0 +1,21 @@
+Linux module.
+    linux.c 
+        contains kernel module calls into lib.rs
+        exposes:
+            rustyvisor_linux_virt_to_phys
+            rustyvisor_linux_kmalloc
+
+        entry point for kernel module:
+            rustyvisor_init 
+                rustyvisor_load 
+    lib.rs
+        contains code to wrap hypervisor rust library
+
+hypervisor lib
+    entry point:
+        src/lib.rs:
+            pub extern "C" fn rustyvisor_load() -> i32
+
+    rustyvisor_load():
+        
+
