@@ -1,0 +1,10 @@
+# Clone to neovim
+git clone https://github.com/github/copilot.vim \
+   ~/.config/nvim/pack/github/start/copilot.vim
+
+# One time code
+Generate one time code
+
+# Add to ~/.config/nvim/init.vim
+autocmd VimEnter * Copilot enable
+
