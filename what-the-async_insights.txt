@@ -1,0 +1,55 @@
+Q:
+block_on is  main loop, it only polls the "root" future, so when does
+the general wta::spawn get called that actually pushes a future onto the
+Executor's queue so that it runs in the Runtime's thread pool?
+A: 
+It looks like it is up to the end user to utilize wta::spawn directly 
+if they want to use the thread pool. 
+
+Here is an example from wta's hyper implementation:
+    wta::hyper implements an hyper::rt::Executor that utilize's wta::spawn in it's
+    execute() method:
+
+    impl<F> hyper::rt::Executor<F> for Executor
+    where
+        F: Future + Send + Sync + 'static,
+        F::Output: Send,
+    {
+        fn execute(&self, fut: F) {
+            wta_executor::spawn(fut);
+        }
+    }
+
+Inside of wta's hyper example it in turn uses wta::hyper::Executor when starting server:
+example start() of block_on(start())
+start():
+    let server = Server::builder(Incoming::bind(addr).unwrap())
+            .executor(Executor)
+            .serve(make_service);
+
+     server.await.unwrap();
+
+So hyper Server implementation allows the user to utilize their own  async runtime instead
+of Tokio. This is done via the builder pattern. The user can pass in their own executor
+
+
+Here is another example of wta::spawn() from wta's tcp.rs
+start():
+    let server = TcpListener::bind(&addr).unwrap();
+    let accept  = server.accept();
+    loop {
+        let (stream, addr) = accept.next().await.unwrap()?;
+        wta::spawn(async move {
+            if let Err(e) = process(stream, addr).await {
+                eprintln!("failed to process connection; error = {}", e);
+            }
+        });
+    }
+
+use of context(f: fut)
+wta::executor::context()  and wta::reactor::context() are used to
+push a future onto the main executor or reactor 'singleton'. this is
+so that the users can pass a future onto a threads executor or reactor
+without having to know about or get a handle to the singleton.
+
+

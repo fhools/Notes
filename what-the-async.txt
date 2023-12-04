@@ -1,0 +1,115 @@
+main()
+    instantiates wta Runtime
+    runtime.block_on(start())
+
+struct Runtime 
+    executor: Arc<Executor>,
+    reactor: Arc<Reactor>
+
+# Worker threads
+Runtime spawns a bunch of worker threads:
+    via Runtime::spawn_worker
+
+Runtime::block_on(fut):
+    The block_on polls the future in an loop, if its not ready it does book_keeping,
+    which is basically just polling the reactor's poll, task, events, and timers.
+
+    self.register() <--- See below spawn_worker() for details
+    let waker = Waker::from(MainWaker(ready: Arc<AtomicBool>))
+    let cx = Context::from_waker(&waker)
+    fut = pin!(fut)
+    loop {
+        if ready {
+            match fut.poll(&mut cx) {
+                Poll::Ready(r) => break r,
+                Poll::Pending => ready.store(false, Ordering::Relaxed)
+            }
+        } else {
+            self.reactor.book_keeping();
+        }
+    }
+
+
+
+This call to spawn_worker happens in the default() creation function for Runtime.
+This means that by the time the block_on() call is made, the worker threads are already running.
+
+Runtime::spawn_worker():
+    clones Runtime (self)
+
+    spawns thread
+        main body of thread:
+            this = clones runtime (self) 
+            registers Runtime via register():
+                reactor.register(self)
+                executor.register(self)
+                    EXECUTOR.with(|exec| *exec.borrow_mut() = Some(executor)); 
+                        the above line borrows the RefCell mutably, then it sets the Option<Arc<Executor>>  to the runtime's executor
+            loop forever:
+                this.executor.clone().poll_once() <--- poll_once poll_once(self: Ar<Executor>), so it moves the Runtime's executor into call of poll_once
+
+executor::Executor 
+    This type implements default()
+
+wta::spawn(fut)
+    wta:context(|e| e.spawn(fut))
+        inside of context(f: impl FnOnce(&Arc<Executor>)):
+            grab the thread local executor
+            runs f and passes in the thread local executor as the argument
+            so the FnOnce is this code:
+                |e| e.spawn(fut)
+            and the fut is the argument passed into wta::spawn
+                for example some generic async code:
+                     wta::spawn(async move {
+                        if let Err(e) = process(stream, addr).await {
+                            println!("failed to process connection; error = {}", e);
+                        }
+                     });
+
+
+wta::spawn calls wta::context but passes inside that a closure that calls e.spawn(fut)
+
+Executor::spawn(fut: F):
+    creates a JoinHandle which is a wrapper type around crossbeam oneshot channel
+    creates a fut that is pinned, wraps the fut passed in, and wraps that in a future that will send its output to the oneshot channel
+    self.wake(fut)
+
+Executor::wake(fut: F):
+    pushs the future onto queue
+    unparks a thread, which will then poll the future
+        Note: These threads are pushed onto the Executor during the call to poll_once() call
+
+Executor::spawn is also called by the Runtime::spawn():
+    Runtime::spawn(fut):
+        self.executor.spawn(fut)
+
+Executor::poll_once
+    This is the main entry point used by the worker threads to poll futures.
+
+    The first thing it does is try to pop a future off the queue.
+    If it can't, it parks the thread , adds the thread to the the self.threads array and parks the thread
+        (Note: This means that the self.wake(fut) call in Executor::spawn() is what unparks the thread, 
+        and is the reason why the self.wake has no problem popping thread off the queue
+
+Here's an outline of how a task gets polled:
+   Runtime::block_on(fut)
+        
+# Reactor 
+    The reactor is what connects a leaf future to the underlying OS events
+    For example a TcpStream is a leaf future. It has a receiver channel, this receiver channel
+    is hooked up to the reactor, in the reactor's polling that happens during book_keeping(),
+    it will check the MIO events, and if there is a new event, it will send it to the receiver channel
+
+    In the TcpStream there is a poll_event() tis is what reads the receiver channel will return Poll::Ready
+    if there is a new event, and Poll::Pending if there is no new event.
+
+    The poll_event is called by the poll_io! macro which is called in AsyncRead::poll_read and 
+    AsyncWrite::poll_write, AsyncWrite::poll_flush, and AsyncWrite::poll_close
+
+    Q:How are the Async::poll_read called?
+    A:
+    The AsyncRead trait is implemented for TcpStream, so when you call 
+    TcpStream::read() it calls AsyncRead::poll_read which calls poll_io!
+    which calls poll_event() which returns Poll::Ready if there is a new 
+    event, and Poll::Pending if there is no new event.
+
