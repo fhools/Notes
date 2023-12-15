@@ -1,0 +1,12 @@
+Cumulative Distribution Function (CDF) is a probability 
+function that tells you the probability of a variable is less than or equal
+to a value x.
+
+The probability density function (PDF) is the derivative of the CDF. It is NOT
+a probability, it tells you how weight or concentration of a probability 
+at a given point. You integrate over a range to get the probability.
+
+The uniform canonical distribution is a special case where the PDF is a constnt
+1. It is linearly increasing from 0 to 1. The CDF is a straight line from 0 to 1.
+
+

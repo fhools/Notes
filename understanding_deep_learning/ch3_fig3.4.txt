@@ -1,0 +1,25 @@
+input = [x1, x2]
+
+[x1, x2] dot [w11, w12] = h1
+
+[w11 w12 ]   [x1]     [h1] 
+[w21 w22 ] x [x2]   = [h2]
+[w31 w32 ]            [h3]    
+
+There are as many column in weight matrix as there are inputs
+There are as many rows in weight matrix as there are outputs
+
+so input is 2x1 so weight is 3x2 because 3x2 x 2x1 = 3x1
+
+each of the h1 h2 and h3 are passed through an activation function
+
+then that itself is multiplied by another weight matrix to get the output
+
+since the input for second layer is 3x1 and output is 1x1 then
+this weight matrix  is 1x3 because there is 1 output and 3 inputs
+
+ROWS = output!
+COLUMNS = input!
+
+Remember that
+

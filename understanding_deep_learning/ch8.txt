@@ -1,0 +1,14 @@
+Sources of errors in a model.
+
+Noise:
+        Noise in the training data
+
+Bias:
+        The model is not complex enough for the target output
+
+Variance:
+        This is the sensitivity of the model to different training data.
+        So a small change in training data could result in large changes to the model prediction
+
+        This could be consired as the opposite of bias, where the model is not complex enough.
+

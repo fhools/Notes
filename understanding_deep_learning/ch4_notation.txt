@@ -1,0 +1,14 @@
+A deep learning network has
+    K hidden layers
+    Each layer has D_k neurons
+
+    h_k is the activation of layer k
+    Beta_k is the bias vector for layer k
+    omega_k is the weight matrix for layer k
+
+    D_i is the dimensionality of the input
+    D_o is the dimensionality of the output
+    
+    Beta_K must be the same as output dimensionality
+
+    

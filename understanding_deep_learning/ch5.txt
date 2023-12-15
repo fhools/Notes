@@ -1,0 +1,8 @@
+The notation 
+Pr(y|x) 
+can mean two things
+
+ify is discrete then Pr(y|x) is a probability
+
+if y is continuous then Pr(y|x) is a probability density function which is not the same as a probability
+

@@ -1,0 +1,86 @@
+Variables
+    Inputs or outputs of a function of probabily distribution
+
+Parameters
+    Well known parameters internal to a function 
+    For example for a prob distr the mean and variance are parameters
+
+    Another example is learning rate alpha
+
+Scalars
+    lower case letters
+
+Vectors
+    lower case bold letters
+
+Matrices/Tensors
+    upper case bold letters
+
+Sets
+    elements Wrapped in curly braces
+    {x, y} 
+    \[\{ x_i \mid i = 1, 2, \ldots, I \}\]
+    
+    Sets are bolded caligraphic letters
+    
+    \[\mathcal{R}^{D \times E \times F}\]
+
+Functions
+    Function name followed by arguments in square brackets
+    Name[arguments]
+
+    For example log[x]
+
+
+argmin_x(f)
+    returns the x that minimizes f(x)
+
+Probability
+Pr(x)
+    Probability of x
+Pr(y|x)
+    Probability of y given x
+
+Pr(y,x)
+    Probability of y and x
+
+Pr(y,x|phi)
+    Probability of y and x given phi
+
+
+
+Lipschitz constant
+||f(z1) - f(z2)|| <= Beta ||z1 - z2||
+
+This says that the rate of change of x is bounded by Beta.
+
+
+# Some special functions
+
+## Gamma function
+gamma = integral of t^(x-1)*e^(-t) dt from 0 to inf.
+is a generalization of the factorial function to real numbers
+
+## Dirac delta function
+Some kind of strange fuction whose total area is 1.
+It is value of zero everywhere except at z = 0 where it is infinite.
+
+So somehow the point at z = 0 contributes all the area of 1.
+
+Uses:
+Modeling impulse, or instantaneous forces
+
+Allows use of integral calculus in context where discrete events or action occur
+
+Provides a way to describe systems that have sharp localized effect
+
+## Stirling formula
+x! ~= sqrt(2*pi*x)*(x/e)^x
+
+Autocorrelation formula
+integral of f(x)*f(x+h) dx
+
+Now take that formula instead  of same f with time lag amd do it for 2 different
+functions f and g then you get the cross correlation formula!! Amazing!
+
+

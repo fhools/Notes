@@ -1,0 +1,8 @@
+logits are the raw output in the final layer of a multiclass classification model.
+
+The softmax function is used to convert these raw values into something that looks like a set of
+probabilities that all sum to one.
+
+the softmax will exponentiate the logits and then normalize them by dividing by their sum. this is
+what turns it into a set of probabilities that sum to one.
+

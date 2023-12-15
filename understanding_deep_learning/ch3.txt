@@ -1,0 +1,27 @@
+# universal approximate theorem
+
+a deep learning network has a bunch of linear function units
+that are passed into a non-linear activation function.
+
+this creates function comprised of  bunch of "joints".
+
+for D hidden units there are D+1 linear joints
+
+combined together and with enough of these "joints" any function can be approximated.
+
+this is the universal approximation theorem.
+
+# hidden units can be thought of as dividing the space into regions
+for each hidden unit, it devides the space into two regions, one where it is active and one where it is not.
+
+if you align each of the hidden unit divider onto the axis, 
+you can see that the space is divided.
+
+for 2 dimenionsions its quadrants
+for 3 dimensions its eight octants
+for 4 its 2^4.
+
+etc
+
+
+

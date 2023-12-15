@@ -1,0 +1,33 @@
+Dilated conv
+    Kernel has gaps introduced between normal weights.
+    Can have a larger kerenl size without increasing the number of parameters.
+    Can be used to increase the receptive field of the network.
+
+
+Pooling
+    Max pooling means that the maximum value of the kernel is taken
+    Average pooling means that the average value of the kernel is taken
+
+    When you have a pooling layer, this reduces the size of the image for the next layer.
+
+
+In a conv layer, you are only training the weight of the kernel and a bias. The same kenel is used
+for the entire image. This is a lot less than the number of parameters of a fully connected layer.
+
+
+However for 1 conv layer there will be many kernels. Each of these kernel produces a feature map.
+
+So you will have many feature maps in parallel. 
+
+
+Receptive field
+The receptive field of a neuron means the number of "pixels"  of the original image that feed
+into that neuron.
+
+As the number of layers increases the receptive field increases as well, because of kernel and stride
+and pooling.
+
+So each additional layer is able to see more of the image and thus able to learn more complex features.
+
+
+

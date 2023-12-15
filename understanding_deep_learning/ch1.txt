@@ -1,0 +1,67 @@
+
+# supervised
+  means you have inputs and truth output (labels, values) 
+
+# unsupervised
+  means you have inputs but no truth output (labels, values)
+  instead of learning to map input to output, you learn about the structure 
+
+# reinforcement
+  means you have inputs and a reward function (labels, values)
+
+
+# generative models
+    generative models learn the probability distribution of the data, it generates
+    new data by sampling from the learned probability distribution.
+
+# latent variables
+    transforming a high dimension input into a lower dimensional representation, but still
+    retaining the important information. 
+
+    could SVD be considered a latent variable model? the singular values are the latent variables?
+
+    this almost sounds like compression.
+    is latent variable lossy or lossless?
+
+# latent variables and image captioning/generation from text
+    learn relationionship that matches latent variables of words to latent variables of images
+    advantage:
+        - less image/word pairs needed to train at lower dimensions
+        - more likely to generalize plausible looking images
+        - introducing randomness can generate multiple images
+
+# reinforcement learning
+    an agent interacts with a 'world'
+    via actions
+    the actions change the world
+    the actions will have a reward
+
+# temporal credit assignment problem
+    there is a delay between the action and the reward
+    
+    chess example
+        reward after every move, or at the end of the game?
+
+
+# deep learning in reinforcement learning
+   inputs is the world state
+   output is the action
+
+    also known as _policy network_
+
+
+
+
+# segmantic segmentation classification model that outlines the cows in a photo
+ this is a 
+  - multivariate (because of multiple pixels)
+  - binary (because its classifying  whether or not a pixel is a cow, true or false)
+  - classification (because its classifying whether or not a pixel is a cow)
+  problem
+
+ the input is an image vector of size 256x256x3 (3 because of the RGB channels)
+ the output is a vector of size 256x256x1 (1 because its a binary classification)
+
+
+
+  
