@@ -23,6 +23,15 @@ The ParseNode in turn contains a ParseExpr and other metadata like Span
 Since the ParseNode and ParseExpr are mutually recursive data structure
 this is how the the whole AST can be represented.
 
+The meta crate itself is what contains the AST for the PEST grammar rules.
+
+# Generator crate
+I think the generator crate is used to parse the users .pest file and 
+create the  impl Parser<Rule> trait implementation for the users .pest file
+
+# derive crate
+Makes use of the generator crate to generate the impl Parser<Rule> trait
+
 
 # Meta crate AST
 Once a Pairs data type is returned, there needs to be something

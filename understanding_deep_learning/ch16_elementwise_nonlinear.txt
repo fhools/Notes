@@ -1,0 +1,42 @@
+Elememtwise flows
+=================
+
+Equation 16.12 describes a piecewise linear mapping that is used to transform one space into another in a way that is invertible, ensuring that every point in the input space maps to a unique point in the output space. The mapping is defined on the unit interval [0,1] for both input and output. Let's break down how this function works:
+
+The piecewise linear function $ f(h, \phi) $ is defined as:
+
+$$ f(h, \phi) = \left( \sum_{k=1}^{b-1} \phi_k \right) + (hK - b)\phi_b $$
+
+where:
+- $$ h $$ is the input value in the interval [0,1].
+- $$ \phi $$ represents the parameters of the transformation, where each $$ \phi_k $$ is the slope of the k-th segment of the piecewise function.
+- $ K $ is the number of equally sized regions the input domain [0,1] is divided into.
+- $b = \lfloor hK \rfloor $$ determines the index of the bin that contains $h $$ The floor function $\lfloor \cdot \rfloor $$ gives the greatest integer less than or equal to $hK $$
+
+This piecewise function works as follows:
+
+1. **Determine the Bin:**
+   The value $ hK $$ determines how far along the interval [0,1] the input $ h $ is, and multiplying by $ K $ scales this to the range [0, K]. Taking the floor of this value gives us the bin index $ b $ identifying which segment of the piecewise function $ h $ falls into.
+
+2. **Calculate the Base Height:**
+   The first term, $ \sum_{k=1}^{b-1} \phi_k $ adds up the slopes (parameters) of all the bins before the current bin $ b $ This calculates the base height of the piecewise function just before the bin where $ h $ is located.
+
+3. **Add the Increment Within the Bin:**
+   The second term, $ (hK - b)\phi_b $ calculates how far $ h $ is into the bin $ b $ and scales this distance by the slope $ \phi_b $ of the bin. This effectively adds the increment within the current bin to the base height.
+
+The function $ f(h, \phi) $ is linear within each bin, with a slope determined by the corresponding $ \phi_k $ The parameters $ \phi_1, \phi_2, ..., \phi_K $ must be positive and sum to 1 to ensure that the function $ f(h, \phi) $ is continuous and maps the input interval [0,1] to the output interval [0,1] in an invertible manner.
+
+This mapping is a simple, yet powerful, way to create a non-linear transformation with a piecewise linear function. It's invertible because each piece is a linear function with a positive slope, ensuring one-to-one mapping and monotonicity, which means the function is always increasing and therefore can be reversed uniquely.
+
+
+Translation:
+The equation is utilizing the floor function where b = floor(h_d*K) to provide nonlinearlity. 
+
+The first term of that function sums up all preceding piecewise slopes.
+The second term figures out how far into the bin the input currently is and scales it based on that bin's slope.
+
+The full graph mapes 0.0 - 1.0 to 0.0 - 1.0, but in a nonlinear way, where the slope all add up to 1.0 in the end.
+
+See figure 16.5 for a visual representation of this function.
+
+

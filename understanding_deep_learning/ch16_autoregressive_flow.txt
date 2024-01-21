@@ -1,0 +1,14 @@
+h'_d = g[h_d, phi[h_1:d-1]]
+
+g is the transformer (not that transformer!)
+phi[...] functions are the conditioners 
+
+phi[..] functions return the parameters to be passed into the transformer
+
+input h is a multivariant sample from the base distribution.
+
+it gets passed through the network and output is a sample from the target distribution.
+
+
+
+

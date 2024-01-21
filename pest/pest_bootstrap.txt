@@ -1,0 +1,33 @@
+pest meta is the pest grammar parser itself.
+the grammar.rs file is generated from grammar.pest
+the pest_bootstrap binary builds this grammar.rs file 
+
+there is a cargo bootstrap command that builds this 
+inside of .cargo/config.toml it defines bootstrap as:
+bootstrap = "run --package pest_bootstrap"
+
+the bootstrap/ is the pest_bootstrap crate
+
+derive_parser is the proc macro that generates a parser. it is used as follows:
+
+#[grammar 'my_grammar.pest']
+pub struct MyParser;
+
+when derive_parser returns it will a parser struct  
+struct MyParser;
+
+there is always an enum Rule
+
+this Rule has all the parsing rules.
+
+It also implements a Parser with that generic parameter Rule:
+
+::pest::Parser<Rule> for MyParser {
+ fn parse<'i>(rule: Rule, input: &'i str) -> ::pest::iterators::Pairs<'i, Rule> {
+ ....
+ ...
+ }
+ }
+
+
+

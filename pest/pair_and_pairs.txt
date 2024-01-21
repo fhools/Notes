@@ -1,6 +1,25 @@
 Pair contains shared reference to original ParserState::queue, the input string,
 the index where it is located in queue, and a line_index
 
+#QueueableToken
+This is an enum that contains a Start and End variant
+The Start variant has the following fields:
+    pub input_pos: usize,
+    pub end_token_index: usize,
+
+The End variant has the following fields:
+    pub input_pos: usize,
+    pub start_token_index: usize,
+    pub rule: R
+
+
+Notice it is the End variant that has the Rule.
+Also notice that given a Start variant, you can get the End variant by following the end_token_index.
+Same for the End variant, you can get the Start variant by following the start_token_index.
+
+When creating these variant, the end_token_index is filled in after the fact, meaning 
+we have to go back and fill it in.
+    
 # self.pair() -> usize
 This returns the index where you can find the pair's QueueableToken::End,
 which has the particular Rule and also where in the original input string
@@ -37,11 +56,16 @@ The start field in both is an index into the queue that they reference
 where this Pair or Pairs starts
 
 
-# Pair::to_inner() -> Pairs<'i, R>
+# Pairs::to_inner() -> Pairs<'i, R>
 This will return a pair's inner pair.
 This is deceptively simple, it just increments the pair's start field. 
 Since a pair's children are adjacent to the parent pair in the queue 
 this works.
+
+# Pairs iterator
+The Pairs iterator returns each pair, it goes to the next pair by extracting
+the pair's end index, and adding 1 to that, that returns the next pair in the queue.
+
 
 # Pair::pair() and Pair::pair()
 Returns the last index into queue for the pair's index.

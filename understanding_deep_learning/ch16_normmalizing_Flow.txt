@@ -1,0 +1,29 @@
+x = f(z) takes the base sample and transforms it into the observed space.
+z is the latent variables
+
+f(z) is the forward function
+
+We want to generate the Pr(x).
+This is 
+Pr(x) = Pr(z) * |dz/dx|
+
+dz/dx is derivative of z = f^-1(x)
+
+in practice we just use 1/|df/dz| which is the reciprocal of the derivative of the forward function. 
+
+This is possible because for an invertible function the following holds:
+dz/dx * dx/dz = 1
+
+The following is ChatGPT explaination of why we f must be inverible:
+
+You're pointing out an important distinction in the text regarding the choice of the function \( f \) and its practical use in computing probabilities.
+
+The text states that you need to choose \( f \) judiciously so that it is invertible, which is a theoretical requirement for the change of variables in the probability density function to hold. For the transformation to be valid in the context of normalizing flows or any probabilistic transformations, the function must be invertible to ensure that each point in the observed space can be uniquely mapped back to a point in the latent space. This is a fundamental property that allows the model to correctly describe the underlying probability distribution of the data.
+
+However, when it comes to the actual computation of the likelihood \( \text{Pr}(x|\phi) \), you're observing that we haven't explicitly used the inverse function \( f^{-1} \), but rather the reciprocal of the derivative of \( f \). This is because, mathematically, the operation we need to perform involves the Jacobian (or in the 1D case, the derivative), which has the reciprocal relationship with the Jacobian of the inverse function as mentioned earlier.
+
+Here's the key point: The requirement that \( f \) must be invertible is about ensuring the mathematical and theoretical integrity of the model. It's about guaranteeing that for every \( x \) in the observed space, there is a corresponding \( z \) in the latent space, and vice versa. This is a bijective relationship — a one-to-one correspondence.
+
+In the actual calculation of the likelihood, the equation uses the fact that for an invertible function, the derivative of the function and the derivative of its inverse are reciprocals of each other. In practice, it's often easier to work with the forward function and its derivative because they are directly involved in generating samples from the model and are usually readily available from the model specification.
+
+So, even though the inverse function itself is not explicitly used in the likelihood computation equation, the requirement that \( f \) must be invertible is crucial. It underpins the entire theoretical framework that allows us to use the reciprocal of the derivative of \( f \) in the first place. Without the invertibility of \( f \), the relationship between the densities \( \text{Pr}(x|\phi) \) and \( \text{Pr}(z) \) would not hold.

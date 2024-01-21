@@ -1,0 +1,51 @@
+# clone and build llama.cpp
+git clone https://github.com/ggerganov/llama.cpp
+cd llama.cpp
+make
+
+# the model is in GGUF format which is a custom format used by llama.cpp
+i found on hugging file the mistral-7b model
+
+# I think this is the prompt and reply model
+https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.2-GGUF/blob/main/README.md
+
+# on that page there are multiple GGUF models, I am running the one that it recommends:
+mistral-7b-instruct-v0.2.Q4_K_M.gguf
+
+cd llama.cpp
+cd models
+
+# I tried git clone and git lfs clone but it didn't work. I just download it directly but I found the following command that might work:
+# NOTE: did not work
+pip3 install huggingface-hub
+huggingface-cli download TheBloke/Mistral-7B-Instruct-v0.2-GGUF mistral-7b-instruct-v0.2.Q4_K_M.gguf --local-dir . --local-dir-use-symlinks False
+
+# maybe works?
+git clone git@huggingface.co:ehartford/dolphin-2.5-mixtral-8x7
+
+#this work after I added personal access token for huggingface.co to keychain
+git clone https://huggingface.co/ehartford/dolphin-2.1-mistral-7b
+
+# Try running i
+ ./main --model models/mistral-7b-instruct-v0.2.Q4_K_M.gguf -p "what might a sum(1,2,3) function return?"
+
+
+# Converting a hugginface.co to GGUF format.
+There looks to be instruction to convert hugingface.co to GGUF format  located in llama.cpp README.md
+
+
+# Converting a model to GGUF
+Download the model from huggingface.co
+## Go to llama.cpp and install necessary python libs
+python3 -m pip install -r requirements.txt
+## Convert to GGUF
+python3 convert.py ~/code/models/dolphin-2.1-mistral-7b
+
+# Quantize to 4-bit FP
+./quantize ~/code/models/dolphin-2.1-mistral-7b/ggml-model-f16.gguf q4_0
+
+:what
+
+
+
+

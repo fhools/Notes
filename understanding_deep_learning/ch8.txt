@@ -12,3 +12,19 @@ Variance:
 
         This could be consired as the opposite of bias, where the model is not complex enough.
 
+Bias-variance trade-off
+By increasing a models capacity, thereby reducing bias, we also increase the variance that the model produces 
+
+
+u[x] 
+    This is the mean value of the ideal function of whatever we are trying to model. It is
+    the expected value of the target function if it was actually perfectly modeled.
+
+    It is a fixed value determined by the true data-generating process!
+
+f_u[x] 
+    This is our model's expected value when trained over all possible datasets D. 
+
+
+
+

@@ -1,0 +1,13 @@
+The equation:
+N(X=x; mu, sigma) = (1/sqrt(2*pi*sigma^2))*exp(-(x-mu)^2/(2*sigma^2))
+
+Can be read as
+N is the probability density function of a normal distribution with mean mu and standard deviation sigma
+
+
+To get the probability of a value in a certain range, we need to integrate
+the probability density function over that range. This results in a prbability value.
+
+A PMF returns a probability for value discrete values, while a PDF returns a density
+for continuous values, the PDF must be integrated to get a probability.
+

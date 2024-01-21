@@ -1,0 +1,63 @@
+position encoding.
+add a positional encoding value to the input embeddings to encode the position of each word.
+
+this must be done in such a way each position is unique and does not interfer with the word embedding.
+
+an example coding is as follows:
+
+given an word embedding of dimension D.
+
+the position encoding is also a vector of dimension D.
+
+For the odd index of the position encoding vector, the value is calculated as follows:
+    sin(position/10000^(2i/D))
+
+For the even index of the position encoding vector, the value is calculated as follows:
+    cos(position/10000^(2i/D))
+
+Where position is the position in the input sentence.
+
+The encoding uses both sin and cos so that they end up with a unique encoding for each position.
+
+sin and cos are orthogonal to each other. somehow this provides more information to the model than just using sin or cos alone.
+
+
+
+v_m  is the value matrix per input word.
+
+Given an input of x1,x2...,xN  where N is the input length,
+where each x_i Dx1 where D is dimension of the word embedding.
+
+v_m = B_v + W_v *x_m where B_V is a Dx1 vector and W_v is a DxD matrix of weights for the value matrix.
+
+dimension of v_m is then bias (Dx1) + weight (DxD) * input vector (D_1) = Dx1 
+
+There are  N v_m matrices.
+
+
+each self attention block sa_n[x1, x2, ..., xN] can be considered a function that takes the whole input 
+sequence and output's the nth word of the output.
+
+the dimensions of the sa_n[x1, x2, ..., xN] is Dx1 and there are N of them 
+the sa_n[x1....xN] is computed as follows:
+    sa_n[x1, x2, ..., xN] = sum_m of [a[xm, xn] * v_m] where m is from 1 to N
+
+the a[xm, xn] is the attention score between the mth input word and the nth query word 
+
+the a[xm, xn] is scalar value computed as the  softmax of each key vector dot product with each query:
+  a[x_m, x_n] = softmax_m of [[ k_1 . q_n], [k_2 . q_n], ..., [k_N . q_n]] where q_n is the query vector for the nth word
+
+this attention score can be considered as determining which key vectors are most similar to the query vector
+
+the q_n is the query vector for the nth word.
+the q_n is computed as follows:
+    q_n = B_q + W_q * x_n where B_q is a Dx1 vector and W_q is a DxD matrix of weights for the query matrix.
+    dimension of q_n is then bias (Dx1) + weight (DxD) * input vector (D_1) = Dx1
+
+the k_m is the key vector for the mth input word.
+the k_m is computed as follows:
+    k_m = B_k + W_k * x_m where B_k is a Dx1 vector and W_k is a DxD matrix of weights for the key matrix.
+    dimension of k_m is then bias (Dx1) + weight (DxD) * input vector (D_1) = Dx1
+    
+
+

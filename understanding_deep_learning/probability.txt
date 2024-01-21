@@ -10,3 +10,56 @@ The uniform canonical distribution is a special case where the PDF is a constnt
 1. It is linearly increasing from 0 to 1. The CDF is a straight line from 0 to 1.
 
 
+Bayes Rule:
+p(x| y) = p(y|x) * p(x) / p(y)
+
+
+p(x|y) = the posterior, is a probability
+p(y|x) = the likelihood of x given y .  or can be the probability of y given x). is a function of x. does not sum to 1
+p(y) = the evidence
+p(x) = the prior
+
+the likelihood is a way to determine how likely is it that parameters x likely generated the data y. 
+
+it is not valid to solve for likelihood e.g.
+p(y|x) = p(x|y) * p(y) / p(x)
+
+because even though it is valid algebraically, it is not valid in terms of what the concepts like prior, posterior,
+likelihood, and evidence mean.
+
+
+Here is what chatgpt says:
+```chatgpt
+Your question touches on a subtle but important aspect of probability theory. The confusion often arises because the same mathematical expression, \( p(y|x) \), can be interpreted in two different ways depending on the context: as a probability or as a likelihood. Let's break this down:
+
+1. **As a Probability (\( p(y|x) \))**: 
+   - When interpreted as a probability, \( p(y|x) \) represents the probability of observing the evidence \( y \) given that the hypothesis \( x \) is true.
+   - It's a conditional probability and follows all the rules of probability, including the requirement that the sum over all possible \( y \) equals 1 (for a given \( x \)).
+
+2. **As a Likelihood (\( p(y|x) \))**:
+   - The same expression, when used in the context of likelihood, is viewed differently. Here, \( x \) is considered as a variable parameter, and \( y \) is the observed fixed data.
+   - In this context, \( p(y|x) \) tells us how "likely" the fixed data \( y \) is for different values of \( x \). This is the likelihood of the parameter \( x \) given the data \( y \).
+   - Importantly, as a likelihood, \( p(y|x) \) is not required to sum up to 1 over \( x \). It's a measure of relative support provided by the observed data to different values of \( x \), not a probability distribution over \( x \).
+
+The distinction comes down to what we are considering as variable and what as fixed, and what we are trying to infer:
+
+- **In \( p(y|x) \) as a Probability**: \( y \) is variable, and we are inferring the distribution of \( y \) for a given \( x \).
+- **In \( p(y|x) \) as a Likelihood**: \( x \) is variable, and we are using \( y \) (fixed) to evaluate the plausibility of different \( x \).
+
+Therefore, when we turn to Bayes' Rule and calculate the posterior \( p(x|y) \), we are using the likelihood \( p(y|x) \) to update our beliefs about the distribution of \( x \) given the new evidence \( y \). The posterior \( p(x|y) \) is a true probability distribution—it sums to 1 across all possible \( x \) and provides the updated probabilities of different hypotheses \( x \) after considering the evidence \( y \).
+```
+
+
+So it looks like its a matter of perspective, what is consired variable and what is considered fixed.
+
+
+# random variable
+a random variable can be considered a function that returns a value from a sampple space.
+
+a random variable usually follows a probability distribution, for example the normal distribution / gaussian distribution.
+so when you see random variable, think function that returns a value from a probability distribution.
+
+calling this 'function' is called drawing a sample from the distribution.
+
+
+

@@ -1,0 +1,11 @@
+Self-supervised learning
+    Generative:
+        Remove a portion of input, e.g. a portion of pixels, or  a part of a setence, then
+        train the model to generate the missing part.
+
+    Contrastive:
+        Compare pairs of example, e.g are two images transformed of one or the other
+        Do two setences follow each other in a paragraph?
+        Do two audio clips belong to the same speaker?
+        Do two documents have the same topic?
+

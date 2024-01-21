@@ -1,0 +1,73 @@
+Pr(x|phi) is the probability density of observing the data point x after it has
+been transformed by the function f parameterized by phi. In other words, it 
+gives you the probability density of x in the transformed space, given the 
+parameters phi.
+
+x = f(z, phi)
+z = f^-1(x, phi)
+
+
+
+What Pr(x|phi) is used for according to chatgpt:
+In the context of normalizing flows and other transformation-based models in probability and statistics, \( Pr(x|\phi) \) represents the probability density of observing the data point \( x \) after it has been transformed by the function \( f \) parameterized by \( \phi \). In other words, it gives you the probability density of \( x \) in the transformed space, given the parameters \( \phi \).
+
+Here's what \( Pr(x|\phi) \) is used for and what it signifies:
+
+- **Modeling Complex Distributions:** Normalizing flows use a series of transformations to turn a simple, base distribution (like a standard normal distribution) into a more complex one. \( Pr(x|\phi) \) tells you how likely you are to see the data point \( x \) under this complex, transformed distribution. It’s the density function for the complex distribution you are modeling.
+
+- **Density Estimation:** In machine learning and statistics, we often want to estimate the probability distribution of a dataset. \( Pr(x|\phi) \) allows us to compute the probability density for any given point \( x \) under the model, which is especially useful for datasets where the underlying distribution is not known in advance and cannot be assumed to follow standard, simple distributions.
+
+- **Probabilistic Inference:** \( Pr(x|\phi) \) can be used to perform probabilistic inference. For example, in Bayesian statistics, it can serve as the likelihood function for observing the data \( x \), given parameters \( \phi \).
+
+- **Generative Modeling:** In a generative modeling context, knowing \( Pr(x|\phi) \) allows us to sample new data points that are likely under the model. We can draw samples from the base distribution \( z \), transform them through \( f \), and use \( Pr(x|\phi) \) to ensure that our samples are drawn from the right probability density.
+
+- **Anomaly Detection:** In applications like anomaly detection, a low probability \( Pr(x|\phi) \) might indicate that the data point \( x \) is an outlier or anomalous with respect to the distribution learned by the model.
+
+In summary, \( Pr(x|\phi) \) is essentially telling us the "probability that the data point \( x \) occurs under the model specified by parameters \( \phi \)". It's a cornerstone for many tasks in statistical modeling, machine learning, and data analysis, where understanding and manipulating the probability densities is crucial.
+Sure, let's break down Equation 16.2 step by step:
+
+
+Derivation of Equation 16.2 from ChatGPT:
+1. **Likelihood Maximization:**
+   The goal in many statistical learning tasks is to find the parameters \( \phi \) that make the observed data most probable. This is done by maximizing the likelihood function:
+   \[ \hat{\phi} = \argmax_{\phi} \left[ \prod_{i=1}^{I} Pr(x_i|\phi) \right] \]
+   This product is over all \( I \) observed data points \( \{x_i\} \), and \( Pr(x_i|\phi) \) is the probability density of observing \( x_i \) given the parameters \( \phi \).
+
+2. **Negative Log-Likelihood:**
+   Maximizing the product of probabilities is mathematically equivalent to minimizing the negative of the sum of the logarithms of the probabilities (since log is a monotonically increasing function). This transformation is beneficial because products can lead to numerical underflow for small probabilities and are more computationally intensive than sums.
+   \[ \hat{\phi} = \argmin_{\phi} \left[ -\sum_{i=1}^{I} \log Pr(x_i|\phi) \right] \]
+
+3. **Substitution of \( Pr(x_i|\phi) \) from Equation 16.1:**
+   Recall from Equation 16.1 that:
+   \[ Pr(x|\phi) = \left| \frac{\partial f(z, \phi)}{\partial z} \right|^{-1} \cdot Pr(z) \]
+   Taking the logarithm of this expression, we have:
+   \[ \log Pr(x|\phi) = \log \left| \frac{\partial f(z, \phi)}{\partial z} \right|^{-1} + \log Pr(z) \]
+   Since \( z \) is the pre-image of \( x \) under the transformation \( f \), we can write \( z = f^{-1}(x, \phi) \). So we substitute \( z \) with \( f^{-1}(x, \phi) \) in the log probability term.
+
+4. **Negative Log-Likelihood with Transformation:**
+   Incorporating the transformation into the negative log-likelihood, we get:
+   \[ \hat{\phi} = \argmin_{\phi} \left[ -\sum_{i=1}^{I} \left( -\log \left| \frac{\partial f(z_i, \phi)}{\partial z_i} \right| + \log Pr(z_i) \right) \right] \]
+   Here, \( z_i \) is \( f^{-1}(x_i, \phi) \), the latent variable corresponding to \( x_i \).
+
+5. **Simplified Expression:**
+   Simplifying the expression by removing the double negative and assuming \( Pr(z) \) is known and not a function of \( \phi \), we have:
+   \[ \hat{\phi} = \argmin_{\phi} \left[ \sum_{i=1}^{I} \log \left| \frac{\partial f(z_i, \phi)}{\partial z_i} \right| - \log Pr(z_i) \right] \]
+   This is a common objective function for training models based on normalizing flows.
+
+6. **Final Learning Objective:**
+   The final learning objective in Equation 16.2 is:
+   \[ \hat{\phi} = \argmin_{\phi} \left[ \sum_{i=1}^{I} \log \left| \frac{\partial f(z_i, \phi)}{\partial z_i} \right| - \log Pr(z_i) \right] \]
+   To minimize this objective, we would typically use gradient-based optimization techniques, updating \( \phi \) to make the observed data \( x_i \) more likely under the model.
+
+In essence, Equation 16.2 provides a way to learn the parameters \( \phi \) of the transformation \( f \) by maximizing the likelihood of the observed data after transformation, or equivalently, by minimizing the negative log-likelihood. The equation incorporates the change in density due to the transformation, which is critical for ensuring that the model is a valid probability distribution after the transformation.
+
+First you draw a sample from z 
+Then you transform it with f:
+x = f(z, phi)
+Then you compute the probability density of x in the transformed space, given the parameters phi.
+With this probability density, you can compute the likelihood of the data point x under the model specified by parameters phi.
+
+So in the end the parameters phi are learned that make the observed data most probable.
+
+There is a restriction on f(z, phi), in that it must be invertible so that you can compute the probability density of x in the transformed space, given the parameters phi. 
+

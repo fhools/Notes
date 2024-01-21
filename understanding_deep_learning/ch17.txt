@@ -1,0 +1,91 @@
+Given a Pr(theta|x) where theta are the parameters and x is the data.
+
+This posterior distribution is intractable to compute.
+
+We can approximate this by q(z), z wouuld be the latent variables
+
+This q(z) is simpler to calculate because:
+    It may be made of mutiple simplier distributions that are easier to calculate.
+    It is parameterizable.
+
+Evidence Lower Bound (ELBO) is used to measure the quality of the approximation.
+
+# Jensen's inequality
+It involves Jensin's inequality which says that if you take the log of the 
+expectation (average) of a function, it is always greater than the 
+expectation (average) of the log of the function
+
+This is because the log function is concave so it can be seen as shrinking 
+the values of the function.
+
+# Jenen's inequality is used to move the log inside the integral when computing
+the log likelihood of the data
+
+See equation 17.15 in chapter 17.
+
+# ELBO
+EBLO = integral( q(z|theta) * log( Pr(x,z|phi) / q(z|theta) ) * dz )
+
+Pr(x,z | phi) is the join distrubtion and it could be rewritten using Bayes rule
+Pr(z, x| phi) = Pr(z|x,phi) * Pr(x|phi)
+
+So EBLOW can be rewritten as:
+EBLO = integral( q(z|theta) * log( Pr(z|x, phi) * Pr(x|phi) / q(z|theta) ) * dz )
+
+The log of the products can be rewritten as the sum of the logs:
+EBLO = integral( q(z|theta) * log( Pr(x|phi) ) * dz ) 
+       integral( q(z|theta) * log( Pr(z| x,phi) / q(z|theta) ) * dz )
+
+# q(z|phi) 
+is the variational distribution and it is parameterized by phi, it approximates
+the posterior distribution Pr(z|x,phi) which is intractable.
+
+# Pr(x|phi)
+is the margial likelihood of the data and it is independent of z.
+This is the evidence. Since it is independent of z and q(z) sums to 1, it can be taken out of the integral.
+Calculated by integrating joint probability of data (x) and latent (z) over all possible latent z. 
+Difficult to compute directly
+
+
+
+# Pr(z|x,phi) 
+is the true posterior distribution of latent variable z Given
+the observed data x and the model parameters phi. It is what we are trying to approimmate with qz(z)
+
+
+
+
+
+# Pr(z) is the prior distribution of the latent variable z.
+
+In bayesian the prior is the assumptions or beliefs about the paremeters before the data.
+It serves as a baseline that is then updated when new data is observed.
+
+# Pr(z |  x*, phi) is the posterior distribution.
+It is the updated probability distribution after x* is observed.
+So in Bayes rule:
+    P(z|x*, phi) = P(x*|z, phi) * P(z) / P(x*|phi)
+
+P(z|phi) is the prior 
+
+Sinced we omit the prior P(x*|phi) then the equation is:
+    P(z|x*, phi) is proportional to  P(x*|z, phi) * P(z)
+
+Posterior proportional to likelihood * prior
+Likelihood is probability of data given parameters and latent variables
+Prior is probability of latent variables
+
+# VAE
+The variational autoencoder is a model that tries to  maximimze the ELBO.
+The ELBO is lower bound of the log likelihood of the data.
+The log likelihood is the upperbound of the ELBO.
+
+If the model maximizes the ELBO, it is indirectly maximizing the log likelihood of the data.
+
+This is done by learning parameters of the variational distribution q(z)
+
+
+
+
+
+

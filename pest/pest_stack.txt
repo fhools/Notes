@@ -11,9 +11,9 @@ The snapshots are stored via two data
     A snapshot will use the current cache length as 
     value for this tuples
 
-    The other data is a popped field. Every
+    The other data is a 'popped' field. Every
     time the user does a pop operation the
-    element if added to popped and the
+    element is added to 'popped' and the
     remaining field of the last snapshot state
     is decremented.
 

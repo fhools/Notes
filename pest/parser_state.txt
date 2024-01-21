@@ -52,7 +52,7 @@ Each pair is made up of a rule and the tokens that it spans
 
 All the pairs are stored in ParserState::queue field.
 
-A pair is made up of a QueueableToken, which can be a QueuableStart or QueuableEnd
+A pair is made up of a QueueableToken, which can be a QueuableToken::Start or QueuableToken::End
 The only way for a pair to be created is in ParserState::rule()
 The QueuableToken:
 pub enum QueueableToken<'i, R> {
@@ -72,7 +72,7 @@ The input_pos is the input into the original string,
 The start_token_index and end_token_index is the position in the self.queue
 
 The data structure for  pair would look like
-where rule a is a a + b rule matching expr
+where rule a is a: a + b rule matching expr
 0: [ rule: a , end: 7]              // expr: a + b
 1: [ rule: primary, end: 2]         // primary: a
 2: [ rule: primary, start: 1]       
@@ -82,9 +82,6 @@ where rule a is a a + b rule matching expr
 6: [ rule: primary, start: 5]
 7: [ rule: a , end: 0]              // end of expr: a + b
 
-if it was (a + b) + c
-0: [ rule: a, start: 0]
-1: [ rule:
 
 # Token/Tokens
 Once you have a parsed via ParserState you get back a Pairs
